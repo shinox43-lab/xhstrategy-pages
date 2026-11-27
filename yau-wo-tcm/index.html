@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>佑和中醫診療中心｜市場調查與品牌轉型策略報告（XH Strategy）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --navy: #1B365D;
+      --navy-dark: #102340;
+      --teal: #2E6B62;
+      --teal-light: #E8F2F0;
+      --gold: #C8963E;
+      --gold-soft: #FFF6E5;
+      --coral: #C94A4A;
+      --coral-soft: #FDECEC;
+      --bg: #F6F7F9;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Sticky Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(16, 35, 64, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 16px;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+    .brand-badge {
+      background: var(--gold);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: #CBD5E1;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 8px 13px;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--teal) 100%);
+      color: #fff;
+      padding: 56px 24px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,150,62,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      color: #E2E8F0;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: clamp(26px, 3.6vw, 40px);
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 14px;
+      letter-spacing: -0.3px;
+    }
+    .hero-sub {
+      font-size: 16px;
+      color: #CBD5E1;
+      max-width: 820px;
+      margin-bottom: 32px;
+    }
+    .verdict-banner {
+      background: rgba(255,255,255,0.1);
+      border-left: 4px solid var(--gold);
+      padding: 16px 20px;
+      border-radius: 0 12px 12px 0;
+      max-width: 960px;
+      font-size: 14.5px;
+      color: #F8FAFC;
+      margin-bottom: 34px;
+    }
+    .verdict-banner strong { color: #FDE68A; }
+
+    /* Hero KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 16px;
+    }
+    .kpi-card {
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 18px 18px 16px;
+      backdrop-filter: blur(6px);
+    }
+    .kpi-label {
+      font-size: 12px;
+      color: #CBD5E1;
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .kpi-val.gold { color: #FDE68A; }
+    .kpi-sub {
+      font-size: 12px;
+      color: #94A3B8;
+      margin-top: 6px;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+    .section {
+      margin-bottom: 56px;
+      scroll-margin-top: 84px;
+    }
+    .sec-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .sec-tag {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--teal);
+      background: var(--teal-light);
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .sec-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .sec-desc {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    /* Cards & Grids */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 960px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    .card-title {
+      font-size: 16.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* Diagnostic 4 Pillars */
+    .diag-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--navy);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .diag-card.warn { border-top-color: var(--coral); }
+    .diag-card.gold { border-top-color: var(--gold); }
+    .diag-card.teal { border-top-color: var(--teal); }
+    .diag-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .diag-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .diag-card p {
+      font-size: 13.5px;
+      color: #475569;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    thead th {
+      background: var(--navy);
+      color: #fff;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 11px 14px;
+      border-bottom: 1px solid #EDF2F7;
+      vertical-align: middle;
+    }
+    tbody tr:nth-child(even) { background: #FAFBFD; }
+    tbody tr:hover { background: #F1F6F5; }
+    tbody tr.highlight-row { background: var(--teal-light) !important; font-weight: 600; }
+    tbody tr.amber-row { background: var(--gold-soft) !important; font-weight: 600; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .center { text-align: center; }
+
+    /* Pills & Badges */
+    .pill {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pill-teal { background: var(--teal-light); color: var(--teal); }
+    .pill-red { background: var(--coral-soft); color: var(--coral); }
+    .pill-gold { background: var(--gold-soft); color: #9A6B1E; }
+    .pill-navy { background: #E6EDF6; color: var(--navy); }
+    .pill-purple { background: #F3E8FF; color: #6B21A8; }
+    .pill-gray { background: #F1F5F9; color: #475569; }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+    .filter-btn.active {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+    .search-input {
+      margin-left: auto;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-family: inherit;
+      min-width: 220px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--teal); }
+
+    /* Chart containers */
+    .chart-box {
+      position: relative;
+      height: 340px;
+      width: 100%;
+    }
+    .chart-box-tall {
+      position: relative;
+      height: 440px;
+      width: 100%;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 9px 18px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: var(--teal);
+      color: #fff;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Revenue Simulator */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 960px) { .sim-grid { grid-template-columns: 1fr; } }
+    .sim-controls {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .preset-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .preset-btn {
+      padding: 8px 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--navy);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.18s;
+    }
+    .preset-btn:hover, .preset-btn.active {
+      background: var(--teal);
+      color: #fff;
+      border-color: var(--teal);
+    }
+    .slider-group { margin-bottom: 16px; }
+    .slider-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .slider-val { color: var(--teal); font-weight: 700; }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+      cursor: pointer;
+    }
+    .sim-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 700px) { .sim-kpis { grid-template-columns: repeat(2, 1fr); } }
+    .sim-kpi {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .sim-kpi .lbl { font-size: 11.5px; color: var(--muted); }
+    .sim-kpi .val { font-size: 20px; font-weight: 800; color: var(--navy); margin-top: 2px; }
+    .sim-kpi .sub { font-size: 11.5px; margin-top: 2px; font-weight: 600; }
+    .pos { color: var(--teal); }
+    .neg { color: var(--coral); }
+
+    /* Compliance Cards */
+    .comp-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .comp-top {
+      background: var(--coral-soft);
+      padding: 14px 18px;
+      border-bottom: 1px solid #F9D2D2;
+    }
+    .comp-top .tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--coral);
+      text-transform: uppercase;
+    }
+    .comp-top h4 {
+      font-size: 15px;
+      color: #991B1B;
+      margin-top: 3px;
+    }
+    .comp-body { padding: 16px 18px; font-size: 13.5px; }
+    .comp-safe {
+      margin-top: 12px;
+      background: var(--teal-light);
+      padding: 10px 14px;
+      border-radius: 8px;
+      border-left: 3px solid var(--teal);
+      color: #134E4A;
+      font-size: 13px;
+    }
+
+    /* Roadmap Stage Cards */
+    .stage-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stage-price {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--navy);
+      margin: 8px 0 4px;
+    }
+    .stage-list {
+      margin: 14px 0;
+      padding-left: 18px;
+      font-size: 13.5px;
+      color: #334155;
+    }
+    .stage-list li { margin-bottom: 6px; }
+    .code-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+    /* Callout */
+    .callout {
+      background: var(--teal-light);
+      border-left: 4px solid var(--teal);
+      padding: 16px 20px;
+      border-radius: 0 10px 10px 0;
+      font-size: 14px;
+      color: #1E3A36;
+      margin-top: 18px;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--navy-dark);
+      color: #94A3B8;
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer strong { color: #fff; }
+
+    @media print {
+      .navbar, .filter-bar, .sim-controls { display: none !important; }
+      body { background: #fff; }
+      .card { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="brand-logo">
+        <span>佑和中醫診療中心</span>
+        <span class="brand-badge">XH STRATEGY 市場調研</span>
+      </div>
+      <div class="nav-links">
+        <a href="#overview" class="active">總覽與診斷</a>
+        <a href="#mr04">MR-04 市場規模</a>
+        <a href="#mr03">MR-03 競爭格局</a>
+        <a href="#mr05">MR-05 定價與模擬器</a>
+        <a href="#compliance">2026 合規審查</a>
+        <a href="#roadmap">HK$68,000 轉型方案</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Banner -->
+  <header class="hero" id="overview">
+    <div class="hero-inner">
+      <div class="hero-meta">
+        <span>項目代號：#002</span>
+        <span>•</span>
+        <span>地點：九龍大角咀福全街 6 號 1 樓全層</span>
+        <span>•</span>
+        <span>報告日期：2026 年 11 月</span>
+      </div>
+      <h1>佑和中醫診療中心｜市場調查與品牌轉型策略系統</h1>
+      <p class="hero-sub">
+        整合大角咀／奧運區域人口實證、18 家周邊及跨區競品深度掃描、2025–2026 香港醫療價格帶對標、合規紅線審計，以及 HK$68,000 三階段品牌升級與月收 30 萬增長模型。
+      </p>
+      <div class="verdict-banner">
+        <strong>核心調研定論：</strong>大角咀及奧運核心五選區（85,600 人）的年度可服務市場（SAM）高達 <strong>HK$7,491.6 萬</strong>（月均 HK$624.3 萬）。佑和達成 HK$21 萬盈虧平衡僅需 <strong>3.4%</strong> 市佔，衝刺 HK$30 萬目標亦僅需 <strong>4.8%</strong>。診所過往月均 50 名生客的廣告獲客成本（CAC HK$300–$400，ROAS 3.5x–5.3x）本身健康，真正瓶頸在於<strong>樓上舖曝光隱形、官網長期 7 折自毀套票空間，以及未將「省隊 10 年運動康復＋BTL 痛症儀器＋埋線美顏」推向台前</strong>。
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">核心生活圈人口（5 選區）</div>
+          <div class="kpi-val">85,600</div>
+          <div class="kpi-sub">油尖旺全區 TAM 329,900 人</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">大角咀／奧運年度 SAM</div>
+          <div class="kpi-val gold">HK$7,492萬</div>
+          <div class="kpi-sub">月均 HK$624.3 萬（痛症＋美顏）</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">月收 30 萬所需 SAM 市佔</div>
+          <div class="kpi-val">4.8%</div>
+          <div class="kpi-sub">21 萬盈虧線僅需 3.4%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">已驗證廣告獲客成本 CAC</div>
+          <div class="kpi-val">$300–$400</div>
+          <div class="kpi-sub">月均 50 生客｜ROAS 3.5x–5.3x</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">周邊及跨區核心競品盤點</div>
+          <div class="kpi-val">18 家</div>
+          <div class="kpi-sub">本區痛症僅 3 家（全數週日休）</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">品牌轉型合約總投資</div>
+          <div class="kpi-val gold">HK$68,000</div>
+          <div class="kpi-sub">品牌 4 萬＋市場廣告 2 萬＋社媒 8 千</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Section 1: Current State & 4 Root Causes -->
+    <section class="section">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">DIAGNOSTIC BASELINE</span>
+          <h2 class="sec-title">一、診所營運底盤與客流斷層四大根源</h2>
+        </div>
+        <p class="sec-desc">交叉比對實地諮詢數據（前期 100 萬設備裝修投入、月固定開支 21 萬、現有 300–400 名客底）與區域市場現況。</p>
+      </div>
+
+      <div class="grid-4" style="margin-bottom: 22px;">
+        <div class="diag-card warn">
+          <div class="diag-num">根源 01｜線下門面</div>
+          <h3>樓上舖自然曝光有限</h3>
+          <p>設於福全街 1 樓全層（月租 8 萬 vs 樓下超市 12 萬），缺乏地舖過路客。10 月派發 3,500–3,600 張 DM 即轉化 20–30 名新客，證實本區需求真實存在，僅欠街坊認知。</p>
+        </div>
+        <div class="diag-card warn">
+          <div class="diag-num">根源 02｜數碼基建</div>
+          <h3>自然搜尋與地圖承接斷層</h3>
+          <p>現有 AI 生成網站屬未做 SEO 優化的單頁結構（SPA），加上停投廣告後 11 月初新客歸零，主動搜尋「大角咀痛症／衝擊波」的高意圖流量被太子及旺角對手攔截。</p>
+        </div>
+        <div class="diag-card gold">
+          <div class="diag-num">根源 03｜定位錯配</div>
+          <h3>頂級王牌資產被埋沒</h3>
+          <p>陳醫師具 10 年運動治療資歷（2014–2022 服務廣州黃村省隊）、周醫師具 5–6 年痛症經驗，加上正廠 BTL 痛症儀器，卻在紅海中藥粉賽道消耗資源且未在線上突出。</p>
+        </div>
+        <div class="diag-card teal">
+          <div class="diag-num">根源 04｜定價結構</div>
+          <h3>單次實質 61 折封殺套票</h3>
+          <p>官網掛「試業七折」加現場免診金，令原價 $950 痛症組合僅收 $581（實際客單 $500–$700），與 $3,000／$5,000 充值卡形成 4.3–10 倍跨度，每月僅成交 4–5 套票。</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">已確認過往投放與客群底盤（5 月至 10 月實地核實數據）</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>營運指標</th>
+                <th>實測數據</th>
+                <th>換算經濟模型</th>
+                <th>策略判讀</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>每月廣告投入（IG / FB）</strong></td>
+                <td>HK$15,000 – HK$20,000／月</td>
+                <td>每條 WhatsApp 查詢 HK$60（約 250–333 條／月）</td>
+                <td>前端獲客單價極健康，具備擴容放量基礎</td>
+              </tr>
+              <tr>
+                <td><strong>廣告期新客轉化（5–9 月）</strong></td>
+                <td>月均約 50 名生客；月收 HK$7–8 萬</td>
+                <td>查詢到店率 <strong>15.0%–20.0%</strong>；CAC <strong>$300–$400</strong>；ROAS <strong>3.5x–5.3x</strong></td>
+                <td>前端完全跑通；停滯在於後端套票升單率過低</td>
+              </tr>
+              <tr>
+                <td><strong>客群畫像與累計客底</strong></td>
+                <td>總客量 300–400 人；女性 70%／男性 30%</td>
+                <td>主力 25–40 歲上班族（具醫療保險）＋區內街坊</td>
+                <td>女性比例高達七成，嚴重低估「美顏針／穴位埋線」增長引擎</td>
+              </tr>
+              <tr>
+                <td><strong>財務目標與成本基準</strong></td>
+                <td>月固定開支 HK$210,000；月收目標 HK$300,000</td>
+                <td>目標日均 3–4 名新客（90–120 新客／月）；每位醫師日產 1 萬基準</td>
+                <td>單靠 $600 客單無法回本，必須透過重定價拉高首月人均產值至 $1,780+</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: MR-04 Market Sizing -->
+    <section class="section" id="mr04">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">MR-04 市場規模與機會梳理</span>
+          <h2 class="sec-title">二、油尖旺及大角咀／奧運 TAM-SAM-SOM 量化評估</h2>
+        </div>
+        <p class="sec-desc">數據來源：香港政府統計處表 130-06806、立法會地方選區預計人口、養和醫院 2024 痛症調查（逾 40% 受訪港人受痛症困擾）及統計處第 84 號報告書。</p>
+      </div>
+
+      <div class="grid-2" style="margin-bottom: 22px;">
+        <div class="card">
+          <div class="card-title">
+            <span>大角咀／奧運核心 5 選區人口結構</span>
+            <span class="pill pill-navy">總計 85,600 人</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chartConstituency"></canvas>
+          </div>
+          <div class="callout" style="margin-top: 12px; font-size: 13px;">
+            油尖旺全區住戶月入中位數為 <strong>HK$29,000</strong>，而<strong>從事經濟活動住戶月入中位數高達 HK$37,500</strong>（高於全港中位數 HK$30,000），奧運、富柏及櫻桃一帶聚集高消費力中產上班族。
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <span>核心生活圈月均 SAM vs 佑和營收目標</span>
+            <span class="pill pill-teal">僅需 4.8% 市佔即達 30 萬</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chartSamGap"></canvas>
+          </div>
+          <div class="callout" style="margin-top: 12px; font-size: 13px;">
+            即使採用保守滲透參數（成人佔比 85%、年度私營痛症主動求醫率 20%、女性 25–44 歲埋線滲透 12%），步行圈內年市場規模仍達 <strong>HK$7,491.6 萬</strong>。
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">TAM / SAM / SOM 完整財務推演表</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>市場層級與業務賽道</th>
+                <th class="num">目標成人基數</th>
+                <th class="center">年度滲透率</th>
+                <th class="num">潛在年度客群</th>
+                <th class="num">年度人均消費</th>
+                <th class="num">年度市場規模 (HK$)</th>
+                <th class="num">月均市場規模 (HK$)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>TAM｜油尖旺全區：私營痛症及康復市場</td>
+                <td class="num">280,415</td>
+                <td class="center">20.0%</td>
+                <td class="num">56,083</td>
+                <td class="num">$4,500</td>
+                <td class="num">$252,373,500</td>
+                <td class="num">$21,031,125</td>
+              </tr>
+              <tr>
+                <td>TAM｜油尖旺全區：中醫美容／埋線（女性 25–44）</td>
+                <td class="num">50,475</td>
+                <td class="center">12.0%</td>
+                <td class="num">6,057</td>
+                <td class="num">$6,000</td>
+                <td class="num">$36,342,000</td>
+                <td class="num">$3,028,500</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>TAM 合計（油尖旺區可觸及總市場）</td>
+                <td class="num">—</td>
+                <td class="center">—</td>
+                <td class="num">62,140</td>
+                <td class="num">—</td>
+                <td class="num">$288,715,500</td>
+                <td class="num">$24,059,625</td>
+              </tr>
+              <tr>
+                <td>SAM｜大角咀／奧運核心圈：私營痛症及康復市場</td>
+                <td class="num">72,760</td>
+                <td class="center">20.0%</td>
+                <td class="num">14,552</td>
+                <td class="num">$4,500</td>
+                <td class="num">$65,484,000</td>
+                <td class="num">$5,457,000</td>
+              </tr>
+              <tr>
+                <td>SAM｜大角咀／奧運核心圈：中醫美容／埋線</td>
+                <td class="num">13,097</td>
+                <td class="center">12.0%</td>
+                <td class="num">1,572</td>
+                <td class="num">$6,000</td>
+                <td class="num">$9,432,000</td>
+                <td class="num">$786,000</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>SAM 合計（大角咀／奧運步行可服務市場）</td>
+                <td class="num">—</td>
+                <td class="center">—</td>
+                <td class="num">16,124</td>
+                <td class="num">—</td>
+                <td class="num">$74,916,000</td>
+                <td class="num">$6,243,000</td>
+              </tr>
+              <tr class="amber-row">
+                <td>佑和中醫｜月度盈虧平衡線（佔 SAM 3.4%）</td>
+                <td class="num">16,124</td>
+                <td class="center">3.4%（金額比）</td>
+                <td class="num">~840</td>
+                <td class="num">$3,000</td>
+                <td class="num">$2,520,000</td>
+                <td class="num">$210,000</td>
+              </tr>
+              <tr class="highlight-row">
+                <td>SOM｜佑和中醫目標營收（佔 SAM 4.8%／TAM 1.2%）</td>
+                <td class="num">16,124</td>
+                <td class="center">4.8%（金額比）</td>
+                <td class="num">~1,200</td>
+                <td class="num">$3,000</td>
+                <td class="num">$3,600,000</td>
+                <td class="num">$300,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: MR-03 Competitive Landscape -->
+    <section class="section" id="mr03">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">MR-03 競爭格局與感知地圖</span>
+          <h2 class="sec-title">三、18 家周邊及跨區競爭對手盤點與中藥結構分析</h2>
+        </div>
+        <p class="sec-desc">本區高配痛症對手僅 3 家且全數週日休息；本區 12 間中醫診所中，濃縮中藥粉佔 75.0%（9 家），真正中草藥飲片僅佔 25.0%（3 家：和順堂、朱氏醫館、潘偉英）。</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 22px;">
+        <div class="card-title">
+          <span>互動雙軸競品感知地圖（現代痛症儀器科技 vs 高端專科商業定位）</span>
+          <span class="pill pill-teal">右上象限＝大角咀本區藍海真空</span>
+        </div>
+        <div class="filter-bar" id="mapFilters">
+          <button class="filter-btn active" data-camp="all">顯示全部陣營（20 點）</button>
+          <button class="filter-btn" data-camp="本區痛症/物理(3)">本區痛症／物理 (3)</button>
+          <button class="filter-btn" data-camp="奧海城商場中醫(4)">奧海城商場中醫 (4)</button>
+          <button class="filter-btn" data-camp="大角咀社區醫館(6)">大角咀社區醫館 (6)</button>
+          <button class="filter-btn" data-camp="跨區線上勁敵(5)">跨區太子／旺角勁敵 (5)</button>
+        </div>
+        <div class="chart-box-tall">
+          <canvas id="chartPerceptual"></canvas>
+        </div>
+        <div class="callout">
+          <strong>關鍵發現（營業時間缺口）：</strong>跨區 5 家高聲量對手（復健坊 138 評、Neuron 76 評、InLife 63 評、Year's 2,400 評）全部為樓上舖，成功關鍵在於<strong>單一痛點包裝＋線上搶客＋營業至晚 9:00–10:30</strong>。佑和現時晚 7:00 關門，建議測試每週兩晚延至 8:30–9:00，承接放工上班族。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>18 家競爭對手完整資料庫（支援陣營、中藥類型與關鍵字即時篩選）</span>
+          <span class="pill pill-gray" id="compCountBadge">顯示 18 家競品</span>
+        </div>
+        <div class="filter-bar">
+          <button class="filter-btn active" data-tcamp="all">全部陣營</button>
+          <button class="filter-btn" data-tcamp="本區痛症/物理(3)">本區痛症/物理</button>
+          <button class="filter-btn" data-tcamp="奧海城商場中醫(4)">奧海城商場中醫</button>
+          <button class="filter-btn" data-tcamp="大角咀社區醫館(6)">大角咀社區醫館</button>
+          <button class="filter-btn" data-tcamp="跨區線上勁敵(5)">跨區截流勁敵</button>
+          <button class="filter-btn" data-herb="real">僅看真正中草藥 (3)</button>
+          <input type="text" id="compSearch" class="search-input" placeholder="搜尋診所名稱、服務或位置..." />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>機構名稱</th>
+                <th>競爭陣營</th>
+                <th>位置</th>
+                <th>主打項目</th>
+                <th class="center">中藥類型</th>
+                <th class="center">週日／晚間</th>
+                <th class="center">線上口碑</th>
+                <th>策略缺口與切入點</th>
+              </tr>
+            </thead>
+            <tbody id="compTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: MR-05 Pricing Benchmark & Interactive Revenue Simulator -->
+    <section class="section" id="mr05">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">MR-05 定價研究與營收模型</span>
+          <h2 class="sec-title">四、香港市場價格帶對標、新套票架構與「營收互動模擬器」</h2>
+        </div>
+        <p class="sec-desc">核心策略：官網全面撤除「試業 7 折」及「免診金」以恢復專業正價錨點；將免診金鎖定為付費廣告首診鉤子，並重設痛症儀器與美容埋線三大階梯療程。</p>
+      </div>
+
+      <!-- Market Price Comparison -->
+      <div class="card" style="margin-bottom: 22px;">
+        <div class="card-title">2025–2026 香港市場價格帶對標（單次收費）</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>治療項目</th>
+                <th>香港市場價格帶</th>
+                <th>同業標竿參考</th>
+                <th class="num">佑和官網原價</th>
+                <th class="num">佑和現行 7 折</th>
+                <th class="num">建議新正價</th>
+                <th>策略調整原因</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>中醫問診（診金）</strong></td>
+                <td>$120–$250</td>
+                <td>連鎖 $120–$180</td>
+                <td class="num">$120</td>
+                <td class="num">$84（現場常免）</td>
+                <td class="num"><strong>$120</strong></td>
+                <td>官網恢復正價；免診金僅作廣告首診限定鉤子</td>
+              </tr>
+              <tr>
+                <td><strong>聚焦式衝擊波／電磁波／射頻</strong></td>
+                <td>$600–$1,200</td>
+                <td>復健堂起價 $680</td>
+                <td class="num">$430</td>
+                <td class="num" style="color:var(--coral);font-weight:700;">$301（嚴重賤賣）</td>
+                <td class="num" style="color:var(--teal);font-weight:800;">$580</td>
+                <td>修補與超聲波同價漏洞，仍較物理治療平 15–30%</td>
+              </tr>
+              <tr>
+                <td><strong>痛症雙效組合（儀器＋針灸）</strong></td>
+                <td>$880–$1,400</td>
+                <td>復健堂衝擊波+針灸 $880</td>
+                <td class="num">$830</td>
+                <td class="num">$581</td>
+                <td class="num" style="color:var(--teal);font-weight:800;">$980</td>
+                <td>建立套票原價錨點，令 4 次／8 次套票折實 $710–$770 極吸引</td>
+              </tr>
+              <tr>
+                <td><strong>運動治療（1 小時）</strong></td>
+                <td>$800–$1,500</td>
+                <td>私家物理治療 $900–$1,300</td>
+                <td class="num">$800</td>
+                <td class="num">$560</td>
+                <td class="num"><strong>$800</strong></td>
+                <td>陳醫師 10 年省隊背景王牌，綁入 12 次旗艦康復方案</td>
+              </tr>
+              <tr>
+                <td><strong>美顏針灸</strong></td>
+                <td>$800–$2,000</td>
+                <td>承志 $980／復健堂 $780</td>
+                <td class="num">$650</td>
+                <td class="num">$455</td>
+                <td class="num"><strong>$650</strong></td>
+                <td>回正價已低於市場中位 20–35%，無須自砍毛利</td>
+              </tr>
+              <tr>
+                <td><strong>穴位埋線</strong></td>
+                <td>$800–$1,200／次</td>
+                <td>復健堂 $800–$1,200</td>
+                <td class="num">$1,200</td>
+                <td class="num">$840</td>
+                <td class="num"><strong>$1,200</strong></td>
+                <td>2–3 週自然復購引擎，以 3 次／6 次療程轉化 70% 女性客</td>
+              </tr>
+              <tr>
+                <td><strong>三九天灸（單貼）</strong></td>
+                <td>$250–$380</td>
+                <td>復健堂 $280／連鎖 $350</td>
+                <td class="num">$350</td>
+                <td class="num">$245</td>
+                <td class="num"><strong>$350</strong></td>
+                <td>不投廣告；12 月以 WhatsApp 向舊客推 3 貼 $720 喚醒</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tabbed New Package Showcase -->
+      <div class="card" style="margin-bottom: 22px;">
+        <div class="card-title">全新三大階梯套票體系（由「儲值充值卡」升級為「臨床康復週期」）</div>
+        <div class="tabs" id="pkgTabs">
+          <button class="tab-btn active" data-tab="pain">痛症儀器專線（現金牛）</button>
+          <button class="tab-btn" data-tab="beauty">美容埋線專線（70% 女性引擎）</button>
+          <button class="tab-btn" data-tab="season">12 月三九天灸（舊客喚醒線）</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-pain">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>套票方案</th>
+                  <th>內容與病程定位</th>
+                  <th class="center">次數</th>
+                  <th class="num">新正價合計</th>
+                  <th class="num">建議套票價</th>
+                  <th class="num">折合單次</th>
+                  <th class="center">節省金額（折讓）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>A0. 單項儀器輕享</strong></td>
+                  <td>任選高階痛症儀器（低門檻破冰梯）</td>
+                  <td class="center">5 次</td>
+                  <td class="num">$2,900</td>
+                  <td class="num"><strong>$2,380</strong></td>
+                  <td class="num">$476</td>
+                  <td class="center"><span class="pill pill-teal">省 $520 (8.2 折)</span></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>A1. 急性止痛入門（首診主力）</strong></td>
+                  <td>高階儀器＋針灸／手法（覆蓋 2 週治標期）</td>
+                  <td class="center">4 次</td>
+                  <td class="num">$3,920</td>
+                  <td class="num"><strong>$3,080</strong></td>
+                  <td class="num">$770</td>
+                  <td class="center"><span class="pill pill-teal">省 $840 (7.9 折)</span></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>A2. 黃金康復療程（利潤擔當）</strong></td>
+                  <td>高階儀器＋針灸／筋膜刀（1–2 個月修復期）</td>
+                  <td class="center">8 次</td>
+                  <td class="num">$7,840</td>
+                  <td class="num"><strong>$5,680</strong></td>
+                  <td class="num">$710</td>
+                  <td class="center"><span class="pill pill-teal">省 $2,160 (7.2 折)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>A3. 省隊級深層康復（旗艦款）</strong></td>
+                  <td>8 次儀器針灸＋4 次陳醫師 1 小時運動治療</td>
+                  <td class="center">12 次</td>
+                  <td class="num">$11,040</td>
+                  <td class="num"><strong>$7,680</strong></td>
+                  <td class="num">$640</td>
+                  <td class="center"><span class="pill pill-gold">省 $3,360 (7.0 折)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-beauty">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>套票方案</th>
+                  <th>內容與週期設計</th>
+                  <th class="center">次數</th>
+                  <th class="num">新正價合計</th>
+                  <th class="num">建議套票價</th>
+                  <th class="num">折合單次</th>
+                  <th class="center">節省金額（折讓）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>B1. 美顏針緊緻療程</strong></td>
+                  <td>美顏針灸面部提拉（每週 1 次體驗升單）</td>
+                  <td class="center">5 次</td>
+                  <td class="num">$3,250</td>
+                  <td class="num"><strong>$2,680</strong></td>
+                  <td class="num">$536</td>
+                  <td class="center"><span class="pill pill-teal">省 $570 (8.2 折)</span></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>B2. 穴位埋線入門</strong></td>
+                  <td>穴位埋線塑形（每 2–3 週 1 次，共 6–9 週）</td>
+                  <td class="center">3 次</td>
+                  <td class="num">$3,600</td>
+                  <td class="num"><strong>$2,980</strong></td>
+                  <td class="num">$993</td>
+                  <td class="center"><span class="pill pill-teal">省 $620 (8.3 折)</span></td>
+                </tr>
+                <tr class="highlight-row">
+                  <td><strong>B3. 穴位埋線標準（鎖客主力）</strong></td>
+                  <td>完整體態塑形週期（覆蓋 3–4 個月）</td>
+                  <td class="center">6 次</td>
+                  <td class="num">$7,200</td>
+                  <td class="num"><strong>$5,480</strong></td>
+                  <td class="num">$913</td>
+                  <td class="center"><span class="pill pill-teal">省 $1,720 (7.6 折)</span></td>
+                </tr>
+                <tr>
+                  <td><strong>B4. 埋線＋美顏雙效 VIP</strong></td>
+                  <td>6 次穴位埋線＋6 次美顏針（內外兼修旗艦）</td>
+                  <td class="center">12 次</td>
+                  <td class="num">$11,100</td>
+                  <td class="num"><strong>$7,880</strong></td>
+                  <td class="num">$657</td>
+                  <td class="center"><span class="pill pill-gold">省 $3,220 (7.1 折)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-season">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>季節項目（僅限 WhatsApp 舊客群發）</th>
+                  <th>商業作用與現場搭售設計</th>
+                  <th class="center">次數</th>
+                  <th class="num">原價合計</th>
+                  <th class="num">舊客喚醒價</th>
+                  <th class="num">20% 喚醒預期現金流</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="amber-row">
+                  <td><strong>C1. 12 月三九天灸（3 貼）</strong></td>
+                  <td>零廣告費喚醒 300–400 名舊客；現場加配 5 日針對性中藥粉（$450），並於 3 次貼藥期間自然導入痛症儀器／埋線升單</td>
+                  <td class="center">3 貼</td>
+                  <td class="num">$1,050</td>
+                  <td class="num"><strong>$720</strong></td>
+                  <td class="num"><strong>HK$66,150</strong>（70 人天灸＋35 人加配中藥）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Revenue Simulator -->
+      <div class="card">
+        <div class="card-title">
+          <span>互動營收躍升模擬器（What-If 財務沙盤）</span>
+          <span class="pill pill-gold">拖動滑桿即時對比 HK$21 萬盈虧線與 HK$30 萬目標</span>
+        </div>
+
+        <div class="sim-grid">
+          <div class="sim-controls">
+            <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px;">快速切換預設階段</div>
+            <div class="preset-row">
+              <button class="preset-btn" onclick="applyPreset('p0', this)">現狀基準 (50客)</button>
+              <button class="preset-btn" onclick="applyPreset('p1', this)">重定價常規月</button>
+              <button class="preset-btn active" onclick="applyPreset('p1b', this)">12月天灸喚醒</button>
+              <button class="preset-btn" onclick="applyPreset('p2', this)">擴量穩態 (100客)</button>
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-head">
+                <span>每月新客總數（目標 90–120）</span>
+                <span class="slider-val" id="lblNewClients">50 人</span>
+              </div>
+              <input type="range" id="slNewClients" min="30" max="130" step="5" value="50" oninput="updateSim()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-head">
+                <span>新客首診套票轉化率</span>
+                <span class="slider-val" id="lblPkgRate">30%</span>
+              </div>
+              <input type="range" id="slPkgRate" min="10" max="45" step="5" value="30" oninput="updateSim()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-head">
+                <span>新套票平均客單價（HK$）</span>
+                <span class="slider-val" id="lblPkgAvg">$4,073</span>
+              </div>
+              <input type="range" id="slPkgAvg" min="2500" max="6000" step="100" value="4073" oninput="updateSim()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-head">
+                <span>持續覆診及療程續單（HK$）</span>
+                <span class="slider-val" id="lblRepeat">$28,000</span>
+              </div>
+              <input type="range" id="slRepeat" min="15000" max="140000" step="2000" value="28000" oninput="updateSim()" />
+            </div>
+
+            <div class="slider-group" style="margin-bottom:0;">
+              <div class="slider-head">
+                <span>12 月三九天灸舊客喚醒率（350 人基數）</span>
+                <span class="slider-val" id="lblTianjiu">20%</span>
+              </div>
+              <input type="range" id="slTianjiu" min="0" max="35" step="5" value="20" oninput="updateSim()" />
+            </div>
+          </div>
+
+          <div>
+            <div class="sim-kpis">
+              <div class="sim-kpi">
+                <div class="lbl">模擬月度總營收</div>
+                <div class="val" id="simTotal">$183,250</div>
+                <div class="sub" id="simLift">對比現狀 +144.3%</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="lbl">距 21 萬盈虧線</div>
+                <div class="val" id="simVsBe">-$26,750</div>
+                <div class="sub" id="simBeNote">月固定開支 $210,000</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="lbl">距 30 萬目標線</div>
+                <div class="val" id="simVsTarget">-$116,750</div>
+                <div class="sub">月收目標 $300,000</div>
+              </div>
+              <div class="sim-kpi">
+                <div class="lbl">預估月廣告費需求</div>
+                <div class="val" id="simAdSpend">$13,125</div>
+                <div class="sub">按 75% 付費 × $350 CAC</div>
+              </div>
+            </div>
+            <div class="chart-box" style="height: 310px;">
+              <canvas id="chartSimBridge"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: 2026 Compliance Audit -->
+    <section class="section" id="compliance">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">BS-01 2026 醫療宣傳合規審計</span>
+          <h2 class="sec-title">五、香港《不良廣告（醫藥）條例》與中醫專業守則紅線清單</h2>
+        </div>
+        <p class="sec-desc">香港中醫藥管理委員會於 2026 年初發出最新監管通訊，嚴查社交平台中醫美容及誇大療效宣傳。以下為佑和現有官網必須於階段一即時清除的 4 項高危合規風險。</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="comp-card">
+          <div class="comp-top">
+            <div class="tag">高危紅線 01｜Cap. 231 附表一受管制疾病</div>
+            <h4>官網現有字眼：「糖尿病、高血壓調理」「不孕」</h4>
+          </div>
+          <div class="comp-body">
+            香港《不良廣告（醫藥）條例》嚴格限制公開宣傳預防或治療特定受管制疾病，在官網首頁、團隊頁及付費廣告出現上述字眼存在直接法律風險與 Google／Meta 拒審封戶風險。
+            <div class="comp-safe">
+              <strong>合規改寫建議：</strong>改為聚焦非受管制之痛症及日常體質管理（如肩頸腰背勞損、運動筋膜修復、都市睡眠及脾胃調理）。
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-top">
+            <div class="tag">高危紅線 02｜跨專業職稱與服務冒用</div>
+            <h4>官網套餐現有字眼：「送 1 次／3 次物理治療」</h4>
+          </div>
+          <div class="comp-body">
+            診所由香港註冊中醫師駐診，並非註冊物理治療師診所，於官網套餐及廣告中宣稱提供或贈送「物理治療」涉嫌觸犯《輔助醫療業條例》及專業守則。
+            <div class="comp-safe">
+              <strong>合規改寫建議：</strong>統一正名為「現代痛症儀器輔助治療」「中醫骨傷及運動康復指導」，以「省隊運動康復背景」合法對位物理治療市場。
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-top">
+            <div class="tag">高危紅線 03｜註冊中醫專業守則折扣招徠禁令</div>
+            <h4>官網現有字眼：「試業全場項目七折」</h4>
+          </div>
+          <div class="comp-body">
+            根據《香港註冊中醫專業守則》，只要註冊中醫師與診所存在財務或專業關聯，即不得透過大劈價、限時早鳥優惠、保證療效或套票推銷壓力招徠病人。
+            <div class="comp-safe">
+              <strong>合規改寫建議：</strong>官網一律展示透明正價與臨床療程規劃；廣告頁改採中性「首次預約痛症／體質評估服務（詳情 WhatsApp 查詢）」，於一對一對話才說明首診診金安排。
+            </div>
+          </div>
+        </div>
+
+        <div class="comp-card">
+          <div class="comp-top">
+            <div class="tag">高危紅線 04｜2026 嚴打「美容埋線標榜保險索償」</div>
+            <h4>社交廣告嚴禁鼓吹「次次可 Claim 保險／用盡年底額度」</h4>
+          </div>
+          <div class="comp-body">
+            2026 年 1 月監管機構已把多宗標榜中醫美容、減肥埋線可申領保險的機構個案交由紀律小組跟進。純美容或減肥並不屬於醫療保險保障範圍，絕不可作索償招徠。
+            <div class="comp-safe">
+              <strong>合規改寫建議：</strong>僅於診所頁尾或 FAQ 中性說明：「診所提供香港註冊中醫師簽發之正式診症收據；保障範圍因應個別保單而異，請向所屬保險公司查詢。」
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: HK$68,000 Transformation Roadmap -->
+    <section class="section" id="roadmap">
+      <div class="sec-header">
+        <div>
+          <span class="sec-tag">XH STRATEGY #002 專案選單</span>
+          <h2 class="sec-title">六、HK$68,000 三階段品牌轉型與營銷推進路線圖</h2>
+        </div>
+        <p class="sec-desc">聚焦「讓品牌出得場面」的企業級重構框架，並採「首 2 週並行止血」節奏，確保診所毋須苦等建站即可搶抓 12 月三九天灸與痛症客流。</p>
+      </div>
+
+      <div class="grid-3" style="margin-bottom: 22px;">
+        <div class="stage-card" style="border-top: 5px solid var(--navy);">
+          <div>
+            <span class="pill pill-navy">階段一｜佔比 58.8%｜1–2 個月</span>
+            <div class="stage-price">HK$40,000</div>
+            <div style="font-weight:700;color:var(--teal);margin-bottom:8px;">品牌調整、策略與官網重構</div>
+            <ul class="stage-list">
+              <li>完成 <strong>MR-03 / MR-04 / MR-05</strong> 市場調查與競品定價對標</li>
+              <li>確立「省隊運動康復＋BTL 儀器＋埋線美顏」三層訊息屋與合規清雷</li>
+              <li><strong>首 2 週並行止血</strong>：優先上線痛症／埋線獨立落地頁（免診金鉤子）＋12 月三九天灸舊客 WhatsApp 喚醒文案</li>
+              <li>淘汰 AI 單頁 SPA 缺陷，全面重寫網站文案、服務貨架與階梯新套票</li>
+            </ul>
+          </div>
+          <div class="code-chips">
+            <span class="pill pill-gray">BS-01/02/04</span>
+            <span class="pill pill-gray">WD-01/02/05/07</span>
+            <span class="pill pill-gray">MC-02/03</span>
+          </div>
+        </div>
+
+        <div class="stage-card" style="border-top: 5px solid var(--teal);">
+          <div>
+            <span class="pill pill-teal">階段二｜佔比 29.4%｜1 月設定＋3 月調整</span>
+            <div class="stage-price">HK$20,000</div>
+            <div style="font-weight:700;color:var(--teal);margin-bottom:8px;">市場策略、SEO／SEM 與廣告建置</div>
+            <ul class="stage-list">
+              <li><strong>SM-09 數據基建永遠第一</strong>：於客戶名下安裝 GA4、GSC、Meta Pixel 及 WhatsApp 轉化追蹤</li>
+              <li>建立大角咀／奧運側翼關鍵字庫（衝擊波、筋膜刀、埋線、週日中醫）</li>
+              <li>Google Business Profile 本地地圖重構與好評衝刺（22 則 → 50+ 則）</li>
+              <li>Google Search Ads＋Meta 廣告帳戶建置＋3 個月數據校準與季度覆盤</li>
+            </ul>
+          </div>
+          <div class="code-chips">
+            <span class="pill pill-gray">SM-09</span>
+            <span class="pill pill-gray">SM-01/02/10</span>
+            <span class="pill pill-gray">SM-03/06</span>
+          </div>
+        </div>
+
+        <div class="stage-card" style="border-top: 5px solid var(--gold);">
+          <div>
+            <span class="pill pill-gold">階段三｜佔比 11.8%｜第 2 個月起</span>
+            <div class="stage-price">HK$8,000</div>
+            <div style="font-weight:700;color:#9A6B1E;margin-bottom:8px;">1 個月社交媒體品牌提升框架</div>
+            <ul class="stage-list">
+              <li>IG / Facebook 專業品牌視覺框架、版面規範與廣告帳戶架構設定</li>
+              <li>首月交付 <strong>12 篇專業圖文</strong>（每週 3 篇 × 4 週）建立高端診所權威感</li>
+              <li><strong>2–3 條醫師專業短片</strong>：提供分鏡腳本＋拍攝指引＋後期品牌包裝剪輯</li>
+              <li><em>交付邊界明確：不含上門外景視頻拍攝（由診所按腳本自拍回傳素材）；期滿可按 HK$8,000／月續約</em></li>
+            </ul>
+          </div>
+          <div class="code-chips">
+            <span class="pill pill-gray">SM-04</span>
+            <span class="pill pill-gray">SM-05</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">建議付款里程碑與下週客戶對接前置清單</div>
+        <div class="grid-2">
+          <div>
+            <table style="border:1px solid var(--border);">
+              <thead>
+                <tr>
+                  <th>期數</th>
+                  <th>收款節點（固定日曆）</th>
+                  <th class="num">金額 (HK$)</th>
+                  <th class="center">佔比</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>第 1 期</td>
+                  <td>簽約首付（收到款項後啟動階段一與首 2 週落地頁）</td>
+                  <td class="num"><strong>$30,000</strong></td>
+                  <td class="center">44.1%</td>
+                </tr>
+                <tr>
+                  <td>第 2 期</td>
+                  <td>第 2 個月同日（階段一尾款 $10,000＋階段二 $20,000）</td>
+                  <td class="num"><strong>$30,000</strong></td>
+                  <td class="center">44.1%</td>
+                </tr>
+                <tr>
+                  <td>第 3 期</td>
+                  <td>第 3 個月／社交媒體品牌提升啟動</td>
+                  <td class="num"><strong>$8,000</strong></td>
+                  <td class="center">11.8%</td>
+                </tr>
+                <tr class="highlight-row">
+                  <td colspan="2">專案總合約金額（不含第三方廣告費、Hosting/Domain 及外景拍攝）</td>
+                  <td class="num"><strong>$68,000</strong></td>
+                  <td class="center">100.0%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:10px;padding:18px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:10px;">下週會議需向客戶確認及回收的前置資料（依賴順延規則）</div>
+            <ol style="padding-left:18px;font-size:13.5px;color:#334155;line-height:1.8;">
+              <li><strong>近 3–6 個月去識別化銷售紀錄</strong>（隱藏病人姓名，保留日期、項目、金額、新／舊客標記）。</li>
+              <li><strong>新價目與套票拍板</strong>：確認取消官網 7 折、高階儀器調至 $580，以及 12 月三九天灸 $720 舊客喚醒方案。</li>
+              <li><strong>醫師真實素材與履歷證明</strong>：陳醫師黃村省隊經歷簡介、診所環境與 BTL 儀器實拍相片。</li>
+              <li><strong>數碼帳戶管理員權限</strong>：域名註冊商、Google 帳戶（開立 GA4 / GSC / GBP）、Meta Business 帳戶。</li>
+              <li><strong>確認延長營業時間可行性</strong>：是否試行每週兩晚延長至 20:30–21:00 以承接放工痛症客。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <strong>XH Strategy（XHealth Solution Company Limited）</strong>｜佑和中醫診療中心市場調查與品牌轉型策略系統（#002）<br />
+    本互動網頁為內部及客戶匯報專用機密文件・所有財務模型均已通過量化驗證
+  </footer>
+
+  <script>
+    // =========================================================
+    // 1. VERIFIED DATA STORE (SINGLE SOURCE OF TRUTH)
+    // =========================================================
+    const COMPETITORS = [
+      { name: "全面醫護脊椎及痛症中心", camp: "本區痛症/物理(3)", loc: "港灣豪庭廣場地下", focus: "註冊脊醫＋物理治療＋痛症儀器", herb: "無中藥", hours: "週日休｜地舖", rev: "20+評 (5.0★)", x: 9.0, y: 8.2, gap: "上市公司地舖強敵，但週日休且物理治療常須西醫轉介" },
+      { name: "聯合醫務中心 (奧運/普康)", camp: "本區痛症/物理(3)", loc: "奧海城三期地下", focus: "西醫門診＋註冊物理治療＋運動康復", herb: "無中藥", hours: "週日休｜晚6時收", rev: "20評 (偏弱)", x: 8.5, y: 7.8, gap: "晚6時關門＋週日休，無法服務放工及週末上班族" },
+      { name: "東華三院健康天地", camp: "本區痛症/物理(3)", loc: "港灣豪庭廣場地下", focus: "社區物理治療＋超聲波＋長者中風復康", herb: "無中藥", hours: "週日休｜5:48收", rev: "少 (社福穩定)", x: 7.0, y: 3.0, gap: "排期長、僅日間開放、非商業私隱環境" },
+      { name: "榮福堂中醫治療中心 (奧運)", camp: "奧海城商場中醫(4)", loc: "奧海城一期", focus: "內科＋皮膚＋針灸＋跌打骨傷", herb: "濃縮藥粉", hours: "週日開｜晚8時收", rev: "商場中最佳", x: 4.2, y: 6.2, gap: "無歐洲高階痛症儀器及運動治療" },
+      { name: "和順堂中醫診所 (奧海城)", camp: "奧海城商場中醫(4)", loc: "奧海城二期", focus: "名醫內科＋傳統飲片代煎＋針灸推拿", herb: "真正中草藥", hours: "週日開｜晚9時收", rev: "兩極化", x: 2.2, y: 7.0, gap: "強項在古法飲片煲藥，非現代痛症儀器" },
+      { name: "農本方中醫診所 (奧海城)", camp: "奧海城商場中醫(4)", loc: "奧海城一期", focus: "標準化濃縮中藥顆粒＋內科婦科針灸", herb: "濃縮藥粉", hours: "公假休｜商場客", rev: "極少 (個位數)", x: 3.5, y: 6.0, gap: "純靠藥粉品牌慣性，缺乏痛症專科與儀器" },
+      { name: "健福堂中醫診所 (奧海城)", camp: "奧海城商場中醫(4)", loc: "奧海城二期", focus: "日常中醫內科＋婦科＋針灸", herb: "濃縮藥粉", hours: "週日開｜早9時起", rev: "極少", x: 2.8, y: 5.2, gap: "商場細舖純過路客，無現代痛症設備" },
+      { name: "朱氏醫館", camp: "大角咀社區醫館(6)", loc: "大角咀榆樹街地舖", focus: "傳統中醫內科＋針灸拔罐＋40年老字號", herb: "真正中草藥＋藥粉", hours: "週日休｜2024新裝", rev: "近20評 (高分)", x: 2.5, y: 4.5, gap: "社區口碑最強，但週日休且無痛症儀器" },
+      { name: "岐黃景略中醫診所", camp: "大角咀社區醫館(6)", loc: "港灣豪庭廣場地下", focus: "中醫內科＋婦科＋針灸艾灸", herb: "濃縮藥粉", hours: "週末開｜地舖", rev: "幾乎零評論", x: 3.0, y: 4.8, gap: "線上聲量為零，無儀器與運動治療" },
+      { name: "太平中醫藥針灸診所", camp: "大角咀社區醫館(6)", loc: "富多來商場二期", focus: "社區針灸＋內科開藥", herb: "濃縮藥粉", hours: "週末開｜晚8時收", rev: "10評 (5.0★)", x: 2.2, y: 3.2, gap: "傳統屋苑老店，環境難吸納高客單中產" },
+      { name: "陳心怡中醫診所", camp: "大角咀社區醫館(6)", loc: "大角咀晏架街", focus: "女註冊中醫個人主理＋婦科內科針灸", herb: "濃縮藥粉", hours: "週日休", rev: "少 (FB互動)", x: 2.4, y: 4.0, gap: "單人醫師產能有限，無儀器配置" },
+      { name: "芳慧堂中醫診所", camp: "大角咀社區醫館(6)", loc: "大角咀中匯街地舖", focus: "鄰里綜合中醫門診＋基礎針灸", herb: "濃縮藥粉", hours: "週日開 (週三休)", rev: "極少", x: 1.8, y: 2.5, gap: "純街坊小店，缺現代療程規劃" },
+      { name: "潘偉英註冊中醫 (集賢堂)", camp: "大角咀社區醫館(6)", loc: "富多來商場二期", focus: "50年父子檔傳統跌打骨傷＋草藥代煎", herb: "真正中草藥", hours: "傳統街坊時段", rev: "長者口碑", x: 1.5, y: 3.5, gap: "傳統跌打＋長者醫療券客群，與佑和世代分層" },
+      { name: "復健坊／復健堂 (太子)", camp: "跨區線上勁敵(5)", loc: "太子基隆街 (隔1站)", focus: "物理治療＋中醫針灸＋聚焦式衝擊波", herb: "配合中醫", hours: "每日至晚10時", rev: "138評 (4.8★)", x: 9.2, y: 7.6, gap: "專設大角咀SEO頁截客，但跨區複診交通成本高" },
+      { name: "Neuron痛症治療專門店", camp: "跨區線上勁敵(5)", loc: "旺角大南街", focus: "痛症儀器＋快速止痛套票", herb: "無", hours: "早9至晚10:30", rev: "76評 (高分)", x: 9.5, y: 8.0, gap: "超長營業時間商業化運作，但無中醫內調與醫保彈性" },
+      { name: "InLife 中醫痛症理療專家", camp: "跨區線上勁敵(5)", loc: "旺角登打士街商廈", focus: "中醫針灸＋推拿＋復位痛症專科", herb: "輔助中藥", hours: "平日至晚9時", rev: "63評 (4.8★)", x: 7.5, y: 7.4, gap: "樓上舖靠單一痛症定位成功，屬佑和直接標竿" },
+      { name: "Year's 中醫美容專門店", camp: "跨區線上勁敵(5)", loc: "旺角彌敦道全層", focus: "中醫美顏針＋美容體態調理", herb: "中醫美容", hours: "每日至晚9時", rev: "2,400評 (4.9★)", x: 6.5, y: 8.6, gap: "2,400評驗證女性市場龐大，大角咀本區近乎真空" },
+      { name: "仁美專科中醫診所", camp: "跨區線上勁敵(5)", loc: "旺角彌敦道商廈", focus: "專科女科＋減肥埋線＋皮膚暗瘡", herb: "中藥＋埋線", hours: "商廈門診時段", rev: "121評 (4.7★)", x: 5.8, y: 7.8, gap: "專科包裝極清晰，驗證埋線高復購吸金力" }
+    ];
+
+    const YAUWO_POINTS = [
+      { name: "佑和中醫 (現況)", x: 8.0, y: 5.5, rev: "22評 (5.0★)", gap: "1樓隱形＋晚7時收＋AI官網未突出省隊與儀器" },
+      { name: "佑和中醫 (建議目標新定位)", x: 8.8, y: 7.2, rev: "目標100+評", gap: "卡位大角咀「免轉介高配痛症＋埋線美顏」藍海真空" }
+    ];
+
+    // =========================================================
+    // 2. MR-04 CHARTS
+    // =========================================================
+    new Chart(document.getElementById('chartConstituency'), {
+      type: 'bar',
+      data: {
+        labels: ['大角咀北 (E12)', '富柏 (E08)', '奧運 (E09)', '櫻桃 (E10)', '大角咀南 (E11)'],
+        datasets: [{
+          label: '選區基準人口',
+          data: [20000, 18500, 17000, 15900, 14200],
+          backgroundColor: ['#1B365D', '#2E6B62', '#2E6B62', '#6DA399', '#64748B'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ` 人口：${ctx.raw.toLocaleString()} 人` }
+          }
+        },
+        scales: {
+          y: { beginAtZero: true, max: 23000, ticks: { callback: v => v.toLocaleString() } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chartSamGap'), {
+      type: 'bar',
+      data: {
+        labels: ['核心圈 SAM 月均市場', '佑和目標營收 (4.8%)', '佑和盈虧線 (3.4%)'],
+        datasets: [{
+          label: '每月金額 (HK$)',
+          data: [6243000, 300000, 210000],
+          backgroundColor: ['#3B7EA1', '#2E6B62', '#C8963E'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: { label: ctx => ` HK$${ctx.raw.toLocaleString()} / 月` }
+          }
+        },
+        scales: {
+          x: { beginAtZero: true, ticks: { callback: v => '$' + (v / 10000).toFixed(0) + '萬' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // =========================================================
+    // 3. MR-03 INTERACTIVE PERCEPTUAL MAP + TABLE
+    // =========================================================
+    const quadrantPlugin = {
+      id: 'quadrantPlugin',
+      beforeDraw(chart) {
+        const { ctx, chartArea: { left, top, right, bottom }, scales: { x, y } } = chart;
+        const midX = x.getPixelForValue(5);
+        const midY = y.getPixelForValue(5);
+        ctx.save();
+        // Top-right blue-ocean shading
+        ctx.fillStyle = 'rgba(46, 107, 98, 0.08)';
+        ctx.fillRect(midX, top, right - midX, midY - top);
+        // Crosshairs
+        ctx.strokeStyle = '#94A3B8';
+        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(midX, top); ctx.lineTo(midX, bottom);
+        ctx.moveTo(left, midY); ctx.lineTo(right, midY);
+        ctx.stroke();
+        ctx.restore();
+      }
+    };
+
+    const CAMP_COLORS = {
+      "本區痛症/物理(3)": "#C94A4A",
+      "奧海城商場中醫(4)": "#3B7EA1",
+      "大角咀社區醫館(6)": "#64748B",
+      "跨區線上勁敵(5)": "#7C3AED"
+    };
+
+    function buildPerceptualDatasets(activeCamp = 'all') {
+      const ds = [{
+        label: '佑和中醫（現況 → 目標定位）',
+        data: YAUWO_POINTS,
+        backgroundColor: ['#C8963E', '#2E6B62'],
+        borderColor: '#1B365D',
+        borderWidth: 2,
+        pointRadius: [9, 12],
+        pointStyle: ['rectRot', 'star'],
+        showLine: true,
+        tension: 0
+      }];
+
+      Object.keys(CAMP_COLORS).forEach(camp => {
+        if (activeCamp === 'all' || activeCamp === camp) {
+          ds.push({
+            label: camp,
+            data: COMPETITORS.filter(c => c.camp === camp),
+            backgroundColor: CAMP_COLORS[camp],
+            borderColor: '#fff',
+            borderWidth: 1.5,
+            pointRadius: 7.5,
+            pointHoverRadius: 10
+          });
+        }
+      });
+      return ds;
+    }
+
+    const perceptualChart = new Chart(document.getElementById('chartPerceptual'), {
+      type: 'scatter',
+      data: { datasets: buildPerceptualDatasets('all') },
+      plugins: [quadrantPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } },
+          tooltip: {
+            backgroundColor: 'rgba(16, 35, 64, 0.95)',
+            padding: 12,
+            callbacks: {
+              title: items => items[0].raw.name,
+              label: ctx => [
+                ` 現代科技指數：${ctx.raw.x} / 10`,
+                ` 高端專科指數：${ctx.raw.y} / 10`,
+                ` 口碑規模：${ctx.raw.rev}`,
+                ` 策略備註：${ctx.raw.gap}`
+              ]
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0, max: 10.5,
+            title: { display: true, text: '傳統中醫內科調理 (1)  →  現代痛症儀器與康復科技 (10)', font: { weight: 'bold' } }
+          },
+          y: {
+            min: 0, max: 10,
+            title: { display: true, text: '社區街坊親民 (1)  →  高端專科商業醫療 (10)', font: { weight: 'bold' } }
+          }
+        }
+      }
+    });
+
+    document.querySelectorAll('#mapFilters .filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#mapFilters .filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        perceptualChart.data.datasets = buildPerceptualDatasets(btn.dataset.camp);
+        perceptualChart.update();
+      });
+    });
+
+    // Competitor Table Filtering
+    let currentCampFilter = 'all';
+    let onlyRealHerb = false;
+
+    function getCampPill(camp) {
+      if (camp.includes('物理')) return `<span class="pill pill-red">${camp}</span>`;
+      if (camp.includes('商場')) return `<span class="pill pill-navy">${camp}</span>`;
+      if (camp.includes('跨區')) return `<span class="pill pill-purple">${camp}</span>`;
+      return `<span class="pill pill-gray">${camp}</span>`;
+    }
+
+    function renderCompTable() {
+      const q = document.getElementById('compSearch').value.trim().toLowerCase();
+      const filtered = COMPETITORS.filter(c => {
+        const matchCamp = currentCampFilter === 'all' || c.camp === currentCampFilter;
+        const matchHerb = !onlyRealHerb || c.herb.includes('真正中草藥');
+        const matchQ = !q || (c.name + c.loc + c.focus + c.gap).toLowerCase().includes(q);
+        return matchCamp && matchHerb && matchQ;
+      });
+      document.getElementById('compCountBadge').textContent = `顯示 ${filtered.length} / ${COMPETITORS.length} 家競品`;
+      document.getElementById('compTableBody').innerHTML = filtered.map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${getCampPill(c.camp)}</td>
+          <td>${c.loc}</td>
+          <td>${c.focus}</td>
+          <td class="center">${c.herb.includes('真正中草藥') ? `<span class="pill pill-gold">${c.herb}</span>` : c.herb}</td>
+          <td class="center">${c.hours}</td>
+          <td class="center">${c.rev}</td>
+          <td>${c.gap}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.querySelectorAll('[data-tcamp]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-tcamp], [data-herb]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCampFilter = btn.dataset.tcamp;
+        onlyRealHerb = false;
+        renderCompTable();
+      });
+    });
+    document.querySelector('[data-herb]').addEventListener('click', e => {
+      document.querySelectorAll('[data-tcamp], [data-herb]').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      currentCampFilter = 'all';
+      onlyRealHerb = true;
+      renderCompTable();
+    });
+    document.getElementById('compSearch').addEventListener('input', renderCompTable);
+    renderCompTable();
+
+    // =========================================================
+    // 4. PACKAGE TABS
+    // =========================================================
+    document.querySelectorAll('#pkgTabs .tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#pkgTabs .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // =========================================================
+    // 5. INTERACTIVE REVENUE SIMULATOR (VERIFIED FORMULA)
+    // =========================================================
+    const refLinesPlugin = {
+      id: 'refLinesPlugin',
+      afterDatasetsDraw(chart) {
+        const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+        const y210 = y.getPixelForValue(210000);
+        const y300 = y.getPixelForValue(300000);
+        ctx.save();
+        // 210k Break-even
+        ctx.strokeStyle = '#C94A4A';
+        ctx.setLineDash([6, 4]);
+        ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.moveTo(left, y210); ctx.lineTo(right, y210); ctx.stroke();
+        ctx.fillStyle = '#C94A4A';
+        ctx.font = 'bold 11.5px "Noto Sans TC", sans-serif';
+        ctx.fillText('盈虧線 HK$210,000', left + 8, y210 - 6);
+        // 300k Target
+        ctx.strokeStyle = '#2E6B62';
+        ctx.setLineDash([8, 4, 2, 4]);
+        ctx.beginPath(); ctx.moveTo(left, y300); ctx.lineTo(right, y300); ctx.stroke();
+        ctx.fillStyle = '#2E6B62';
+        ctx.fillText('目標線 HK$300,000', left + 8, y300 - 6);
+        ctx.restore();
+      }
+    };
+
+    const simChart = new Chart(document.getElementById('chartSimBridge'), {
+      type: 'bar',
+      data: {
+        labels: ['現狀基準 (50客)', '重定價常規月', '當前模擬情景', '擴量穩態目標 (100客)'],
+        datasets: [
+          { label: '新客單次消費', data: [27000, 28000, 28000, 56000], backgroundColor: '#94A3B8' },
+          { label: '新客階梯套票', data: [20000, 61100, 61100, 134000], backgroundColor: '#2E6B62' },
+          { label: '持續覆診與續單', data: [28000, 28000, 28000, 112000], backgroundColor: '#1B365D' },
+          { label: '12月三九天灸喚醒', data: [0, 0, 66150, 0], backgroundColor: '#C8963E' }
+        ]
+      },
+      plugins: [refLinesPlugin],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } },
+          tooltip: {
+            callbacks: { label: ctx => ` ${ctx.dataset.label}：HK$${Math.round(ctx.raw).toLocaleString()}` }
+          }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false } },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            max: 350000,
+            ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'k' }
+          }
+        }
+      }
+    });
+
+    let currentSingleUnit = 800; // $600 for legacy 70%-off baseline, $800 for restored list price
+
+    function applyPreset(key, btnEl) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      if (key === 'p0') {
+        currentSingleUnit = 600;
+        document.getElementById('slNewClients').value = 50;
+        document.getElementById('slPkgRate').value = 10;
+        document.getElementById('slPkgAvg').value = 4000;
+        document.getElementById('slRepeat').value = 28000;
+        document.getElementById('slTianjiu').value = 0;
+      } else if (key === 'p1') {
+        currentSingleUnit = 800;
+        document.getElementById('slNewClients').value = 50;
+        document.getElementById('slPkgRate').value = 30;
+        document.getElementById('slPkgAvg').value = 4073;
+        document.getElementById('slRepeat').value = 28000;
+        document.getElementById('slTianjiu').value = 0;
+      } else if (key === 'p1b') {
+        currentSingleUnit = 800;
+        document.getElementById('slNewClients').value = 50;
+        document.getElementById('slPkgRate').value = 30;
+        document.getElementById('slPkgAvg').value = 4073;
+        document.getElementById('slRepeat').value = 28000;
+        document.getElementById('slTianjiu').value = 20;
+      } else if (key === 'p2') {
+        currentSingleUnit = 800;
+        document.getElementById('slNewClients').value = 100;
+        document.getElementById('slPkgRate').value = 30;
+        document.getElementById('slPkgAvg').value = 4467;
+        document.getElementById('slRepeat').value = 112000;
+        document.getElementById('slTianjiu').value = 0;
+      }
+      updateSim();
+    }
+
+    function updateSim() {
+      const newClients = Number(document.getElementById('slNewClients').value);
+      const pkgRate = Number(document.getElementById('slPkgRate').value) / 100;
+      const pkgAvg = Number(document.getElementById('slPkgAvg').value);
+      const repeatRev = Number(document.getElementById('slRepeat').value);
+      const tianjiuRate = Number(document.getElementById('slTianjiu').value) / 100;
+
+      document.getElementById('lblNewClients').textContent = `${newClients} 人`;
+      document.getElementById('lblPkgRate').textContent = `${Math.round(pkgRate * 100)}%`;
+      document.getElementById('lblPkgAvg').textContent = `$${pkgAvg.toLocaleString()}`;
+      document.getElementById('lblRepeat').textContent = `$${repeatRev.toLocaleString()}`;
+      document.getElementById('lblTianjiu').textContent = `${Math.round(tianjiuRate * 100)}%`;
+
+      const pkgCount = Math.round(newClients * pkgRate);
+      const singleCount = newClients - pkgCount;
+      const revSingle = singleCount * currentSingleUnit;
+      const revPkg = Math.round(pkgCount * pkgAvg);
+      const tianjiuClients = Math.round(350 * tianjiuRate);
+      const revSeasonal = Math.round(tianjiuClients * 720 + Math.round(tianjiuClients * 0.5) * 450);
+
+      const total = revSingle + revPkg + repeatRev + revSeasonal;
+      const diffBe = total - 210000;
+      const diffTarget = total - 300000;
+      const liftPct = ((total / 75000) - 1) * 100;
+      const estAdSpend = Math.round(newClients * 0.75 * 350);
+
+      document.getElementById('simTotal').textContent = `$${total.toLocaleString()}`;
+      const liftEl = document.getElementById('simLift');
+      liftEl.textContent = `對比現狀 ${liftPct >= 0 ? '+' : ''}${liftPct.toFixed(1)}%`;
+      liftEl.className = 'sub ' + (liftPct >= 0 ? 'pos' : 'neg');
+
+      const beEl = document.getElementById('simVsBe');
+      beEl.textContent = `${diffBe >= 0 ? '+' : '-'}$${Math.abs(diffBe).toLocaleString()}`;
+      beEl.style.color = diffBe >= 0 ? 'var(--teal)' : 'var(--coral)';
+
+      const tgEl = document.getElementById('simVsTarget');
+      tgEl.textContent = `${diffTarget >= 0 ? '+' : '-'}$${Math.abs(diffTarget).toLocaleString()}`;
+      tgEl.style.color = diffTarget >= 0 ? 'var(--teal)' : 'var(--navy)';
+
+      document.getElementById('simAdSpend').textContent = `$${estAdSpend.toLocaleString()}`;
+
+      // Update bar index 2 ("當前模擬情景")
+      simChart.data.datasets[0].data[2] = revSingle;
+      simChart.data.datasets[1].data[2] = revPkg;
+      simChart.data.datasets[2].data[2] = repeatRev;
+      simChart.data.datasets[3].data[2] = revSeasonal;
+      simChart.update();
+    }
+    updateSim();
+
+    // Active nav highlight on scroll
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = 'overview';
+      document.querySelectorAll('header[id], section[id]').forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    });
+  </script>
+</body>
+</html>

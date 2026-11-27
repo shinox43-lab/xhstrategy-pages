@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<!-- Chosen Palette: Warm Culinary Alabaster & Botanical Sage (#FAF8F5 warm alabaster background, #FFFFFF crisp cards, #F2EFE9 sandstone secondary surface, #234E3E deep botanical sage primary, #B85D3B warm terracotta secondary accent, #1E2623 charcoal ink) -->
+<!-- Application Structure Plan: Designed a 5-pillar thematic executive dashboard (1. 商圈與戰略破局, 2. 競品與單價對標, 3. 28-SKU與套餐引擎, 4. 盈虧模擬與合規, 5. 90天執行與交付總表) with sticky top navigation and KPI summary ribbon. Rather than forcing linear reading of two dense research and project management documents, this architecture groups market intelligence, SKU pricing mechanics, financial stress-testing, and project execution into task-oriented interactive modules—enabling instant estate filtering, competitor unit-price comparison, 28-SKU and bundle inspection, live breakeven sensitivity simulation, dynamic Gantt delay shifting (+N days), and real-time handover progress tracking. -->
+<!-- Visualization & Content Choices: 1. Catchment Structure (11,207 units Ring 1 vs Ring 2 across 16 named estates) -> Doughnut Chart (Chart.js Canvas) + interactive estate filter table -> Clarifies dual-tier demographics and verification status. 2. Cross-Competitor Unit Price (HK$/100g) -> Floating Range & Point Chart (Chart.js Canvas) + interactive competitor cards -> Proves small-pack sweet-spot positioning against MeatMania, Kai Bo, DS Groceries & Lau Shang. 3. Category Revenue vs Weighted GM (34.67%) -> Grouped Bar Chart (Chart.js Canvas) + filterable 28-SKU catalog & 5 bundles -> Demonstrates how 40%+ dried seafood/groceries subsidize meat margin. 4. Store Unit Economics & Breakeven -> Dynamic Bar Chart (Chart.js Canvas) + Interactive P&L Sliders -> Quantifies the 34.8% breakeven drop vs low-margin pure meat stores. 5. 5D Brand Diagnostic & 90-Day Gantt -> Radar Chart (Chart.js Canvas) + HTML/CSS/JS Interactive Timeline with +N day delay shift & Handover checklist -> Operationalizes XH Strategy's rules without SVG/Mermaid. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>臻品薈（福全街6號）商圈調研、28-SKU定價與90天項目執行互動儀表板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            alabaster: '#FAF8F5',
+            sandstone: '#F2EFE9',
+            sage: {
+              50: '#F1F6F4',
+              100: '#DCE9E3',
+              600: '#2D624E',
+              700: '#234E3E',
+              800: '#1A3B2F'
+            },
+            terracotta: {
+              50: '#FDF5F2',
+              100: '#F9E4DC',
+              500: '#C96A46',
+              600: '#B85D3B',
+              700: '#96492D'
+            },
+            ink: '#1E2623'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #1E2623;
+      overflow-x: hidden;
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 300px;
+      max-height: 380px;
+    }
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 340px;
+      }
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    .nav-pill-active {
+      background-color: #234E3E;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(35, 78, 62, 0.2);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F2EFE9;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #C5BDB0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-sage-100 selection:text-sage-800">
+
+  <header class="sticky top-0 z-40 bg-alabaster/95 backdrop-blur border-b border-stone-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between py-3 gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-sage-700 text-white flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+            臻
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-base sm:text-lg font-bold text-ink tracking-tight">臻品薈 Elite Collection</h1>
+              <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-sage-100 text-sage-800">食環牌照 4662802118</span>
+              <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-stone-200/80 text-stone-700">BRN 80157118</span>
+            </div>
+            <p class="text-xs text-stone-500">九龍大角咀福全街 6 號地下部份位置 A｜商圈調研・28-SKU 定價・90 天執行總控</p>
+          </div>
+        </div>
+
+        <nav id="main-nav" class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1 lg:pb-0" aria-label="主要導覽">
+          <button data-tab="overview" class="nav-btn nav-pill-active whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all">
+            1. 商圈與戰略破局
+          </button>
+          <button data-tab="competitors" class="nav-btn bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all">
+            2. 競品與單價對標
+          </button>
+          <button data-tab="sku" class="nav-btn bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all">
+            3. 28-SKU 與套餐引擎
+          </button>
+          <button data-tab="economics" class="nav-btn bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all">
+            4. 盈虧模擬與合規
+          </button>
+          <button data-tab="execution" class="nav-btn bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all">
+            5. 90天執行與交付總表
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-sandstone/70 border-b border-stone-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white rounded-xl p-3.5 border border-stone-200/70 shadow-sm">
+          <div class="flex items-center justify-between text-xs text-stone-500 mb-1">
+            <span>商圈 16 屋苑可觸及住戶</span>
+            <span>🏘️</span>
+          </div>
+          <div class="text-xl sm:text-2xl font-bold text-ink tabular-nums">11,207 <span class="text-xs font-normal text-stone-500">伙</span></div>
+          <div class="text-[11px] text-sage-700 mt-1">已核實 9,071 伙＋大同新邨估計 2,136 伙</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-3.5 border border-stone-200/70 shadow-sm">
+          <div class="flex items-center justify-between text-xs text-stone-500 mb-1">
+            <span>28-SKU 綜合加權毛利率</span>
+            <span>📈</span>
+          </div>
+          <div class="text-xl sm:text-2xl font-bold text-sage-700 tabular-nums">34.67% <span class="text-xs font-normal text-stone-500">vs 純凍肉 27.1%</span></div>
+          <div class="text-[11px] text-stone-600 mt-1">海味 42.66%＋雜貨 40.15% 雙引擎拉升</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-3.5 border border-stone-200/70 shadow-sm">
+          <div class="flex items-center justify-between text-xs text-stone-500 mb-1">
+            <span>基準月盈虧平衡營業額</span>
+            <span>⚖️</span>
+          </div>
+          <div class="text-xl sm:text-2xl font-bold text-terracotta-600 tabular-nums">HK$33.4 萬 <span class="text-xs font-normal text-emerald-700 font-semibold">-34.8%</span></div>
+          <div class="text-[11px] text-stone-600 mt-1">日均僅需 53.0 單（客單 $210）即可打平</div>
+        </div>
+
+        <div class="bg-white rounded-xl p-3.5 border border-stone-200/70 shadow-sm">
+          <div class="flex items-center justify-between text-xs text-stone-500 mb-1">
+            <span>第一期 90 天實戰周期</span>
+            <span>🗓️</span>
+          </div>
+          <div class="text-xl sm:text-2xl font-bold text-ink tabular-nums">11/30 – 02/27</div>
+          <div class="text-[11px] text-stone-600 mt-1">鎖定 12/22 冬至與 02/06 農曆新年雙旺季</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+    <section id="tab-overview" class="tab-panel space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/80 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-stone-100 pb-4 mb-5">
+          <div>
+            <span class="inline-block text-xs font-semibold uppercase tracking-wider text-sage-700 bg-sage-50 px-2.5 py-1 rounded-md mb-2">核心戰略定錨與商圈診斷</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-ink">為何「純凍肉薄利多銷」已成死胡同？切入大角咀雙層家庭金礦</h2>
+          </div>
+          <div class="bg-terracotta-50 border border-terracotta-100 rounded-xl px-4 py-3 max-w-md">
+            <div class="text-xs font-bold text-terracotta-700">🎯 品牌核心定位宣言</div>
+            <div class="text-sm font-semibold text-ink mt-0.5">「大角咀小家庭日常好食材選物店」</div>
+            <div class="text-xs text-stone-600 mt-0.5">副標：優質凍肉・無硫海味・精品食材</div>
+          </div>
+        </div>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          本板塊整合臻品薈開業第 2 個月的法定牌照與數碼足跡診斷、2026 年香港食品零售宏觀警示，以及福全街 6 號周邊 16 個具名屋苑（合共 11,207 伙）的雙層人口結構。透過對比深水埗凍肉店「Mr. Cool」結業實例與上市食品股毛利表現，並提供 16 屋苑互動明細篩選器，清晰闡明臻品薈必須以「小包裝無激素凍肉引流＋高毛利無硫海味與日台清潔標籤雜貨賺利」突圍。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3.5">
+          <h3 class="text-base font-bold text-ink flex items-center gap-2">
+            <span>🏢</span> 公司現況核實與開業 2 個月診斷
+          </h3>
+          <div class="space-y-2.5 text-xs sm:text-sm">
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/60">
+              <div class="text-stone-500 text-xs">法定名稱與商業登記</div>
+              <div class="font-semibold text-ink mt-0.5">臻品薈有限公司（BRN: 80157118）</div>
+              <div class="text-xs text-stone-500 mt-0.5">2026年4月9日成立｜九龍大角咀福全街 6 號地下部份位置 A（形品·星寓基座）</div>
+            </div>
+            <div class="p-3 rounded-xl bg-sage-50/70 border border-sage-200/70">
+              <div class="text-sage-800 text-xs font-semibold">✅ 食環署新鮮糧食店牌照：4662802118</div>
+              <div class="text-xs text-stone-700 mt-1">有效期至 2027年3月21日，准售新鮮/冰鮮/冷藏牛羊豬魚禽。日後網銷可申請原牌照批註，毋須重領獨立網售許可證。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200">
+              <div class="text-amber-900 text-xs font-semibold">⚠️ Kick-off 第 1 週必查：同址牌照 4962814002</div>
+              <div class="text-xs text-amber-800 mt-1">公開名單見福全街 6 號地下部份位置 B 列有食物製造廠牌照 4962814002。須核實是否同屬本公司持有：未核實前嚴禁門店現場醃製加工。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
+              <div class="text-rose-900 text-xs font-semibold">🚨 數碼隱形與中英撞名風險</div>
+              <div class="text-xs text-rose-800 mt-1">開業 2 個月仍欠完整 GBP 評價與官網；中文撞名內地逾 50 店粵菜「臻品薈」，英文撞名台北禮品商，必須首週執行 NA-03 實體消歧。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-ink flex items-center gap-2 mb-1">
+              <span>🏘️</span> 福全街 16 屋苑雙層客群（11,207 伙）
+            </h3>
+            <p class="text-xs text-stone-500 mb-3">核心一環 3,958 伙（100% 物業平台核實）＋ 核心二環 7,249 伙（5,113 伙核實＋大同新邨估計 2,136 伙）</p>
+            <div class="chart-container">
+              <canvas id="catchmentChart"></canvas>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-stone-100 grid grid-cols-2 gap-2 text-xs">
+            <div class="p-2.5 rounded-lg bg-sage-50">
+              <div class="font-bold text-sage-800">核心一環：新樓小戶 (35.3%)</div>
+              <div class="text-stone-600 mt-0.5">利奧坊 1–5 期(2,298)、奧柏·御峯(464)、形品·星寓(377)等。冰格空間細，要 200–350g 獨立真空＋快煮。</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-terracotta-50">
+              <div class="font-bold text-terracotta-700">核心二環：成熟家庭 (64.7%)</div>
+              <div class="text-stone-600 mt-0.5">港灣豪庭(3,520)、大同新邨(2,136估)、富多來(700)等。重視抵食、無激素、老火湯料與打邊爐。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3.5">
+          <h3 class="text-base font-bold text-ink flex items-center gap-2">
+            <span>📉</span> 2026 宏觀警示與鄰區前車之鑑
+          </h3>
+          <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-rose-900">反面教材：深水埗「Mr. Cool」凍肉店</span>
+              <span class="text-xs font-bold text-rose-700">月蝕 HK$50,000 結業</span>
+            </div>
+            <p class="text-xs text-rose-800 mt-1.5 leading-relaxed">
+              逾 1,500 呎店月租 $40k（連雜費 $43k），多部大凍櫃令<strong>月電費高達 HK$20,000</strong>。走「薄利多銷」路線在北上買肉與<strong>京東收購佳寶（全場 8 折戰）</strong>夾擊下難以為繼，連「零頂手費」買家亦臨時撤回。
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="text-xs font-semibold text-stone-500">2026 香港上市食品零售毛利率對照</div>
+            <div class="p-2.5 rounded-lg bg-alabaster border border-stone-200/70 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-semibold text-ink">CEC 國際 / 759 阿信屋 (0759.HK)</div>
+                <div class="text-stone-500">進口零食雜貨高毛利（仍受高租金拖累）</div>
+              </div>
+              <span class="font-bold text-sage-700 text-sm tabular-nums">40.3%</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-alabaster border border-stone-200/70 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-semibold text-ink">優品 360 (2360.HK)</div>
+                <div class="text-stone-500">2025 全年 36.1% / 2026 上半年維持高檔</div>
+              </div>
+              <span class="font-bold text-sage-700 text-sm tabular-nums">35.8%</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-sage-50 border border-sage-300 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-bold text-sage-800">臻品薈 28-SKU 四品類目標模型</div>
+                <div class="text-sage-700">小包裝凍肉引流＋常溫無硫海味雜貨賺利</div>
+              </div>
+              <span class="font-bold text-sage-800 text-sm tabular-nums">34.7%</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-alabaster border border-stone-200/70 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-semibold text-ink">HKTVmall 自營 1P (1137.HK)</div>
+                <div class="text-stone-500">2026 中期為迎戰減價戰主動下調毛利</div>
+              </div>
+              <span class="font-bold text-terracotta-600 text-sm tabular-nums">23.1%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-ink">📍 福全街 6 號周邊 16 個具名屋苑明細瀏覽器</h3>
+            <p class="text-xs text-stone-500">大角咀片區住戶月入中位數 HK$27,170（高於油尖旺整體 HK$22,070）；尚未計入福全街 8 號福駿閣等單幢舊樓</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="estate-ring-filter" class="text-xs border border-stone-300 rounded-lg px-2.5 py-1.5 bg-alabaster font-medium text-ink">
+              <option value="ALL">全部 16 屋苑（11,207 伙）</option>
+              <option value="RING1">核心一環：新樓／利奧坊（3,958 伙）</option>
+              <option value="RING2">核心二環：成熟家庭大屋苑（7,249 伙）</option>
+            </select>
+          </div>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-stone-200 bg-alabaster text-stone-600">
+                <th class="py-2.5 px-3 font-semibold">圈層</th>
+                <th class="py-2.5 px-3 font-semibold">屋苑名稱</th>
+                <th class="py-2.5 px-3 font-semibold text-right">伙數</th>
+                <th class="py-2.5 px-3 font-semibold">數據核實狀態</th>
+                <th class="py-2.5 px-3 font-semibold">估算步程</th>
+                <th class="py-2.5 px-3 font-semibold">住戶痛點與主推切入點</th>
+              </tr>
+            </thead>
+            <tbody id="estate-table-body" class="divide-y divide-stone-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-competitors" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/80 shadow-sm">
+        <span class="inline-block text-xs font-semibold uppercase tracking-wider text-terracotta-600 bg-terracotta-50 px-2.5 py-1 rounded-md mb-2">競爭格局與同規格價格錨點</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-ink mb-2">三大核心對標與本區替代者拆解：避開紅海殺價，搶佔小家庭甜蜜點</h2>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          本板塊深度拆解同街工廈強敵 <strong>MeatMania</strong>、模式對標 <strong>營養豐</strong>、促銷機器 <strong>大生生活超市</strong> 及街市/海味專賣店（鴻記、樓上、尚品、佳寶）。點擊下方競品卡片可檢視其結構性弱點與臻品薈切入縫隙；右側圖表將所有競品售價統一折算為 <strong>HK$/100g</strong>，直觀顯示臻品薈如何以「低總價小包裝」切入市場空白。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-ink">點擊競品檢視商業基因與弱點</h3>
+            <span class="text-xs text-stone-500">共 6 組對標對象</span>
+          </div>
+          <div id="competitor-list" class="space-y-2.5"></div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <div id="competitor-detail-card" class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm"></div>
+
+          <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div>
+                <h3 class="text-base font-bold text-ink">跨競品同規格單價對標（HK$/100g）</h3>
+                <p class="text-xs text-stone-500">灰色條為市場實測最低至最高區間，綠點為臻品薈試點中位建議單價</p>
+              </div>
+              <select id="price-group-select" class="text-xs border border-stone-300 rounded-lg px-2.5 py-1.5 bg-alabaster font-medium text-ink">
+                <option value="meat">日常肉類與牛扒（HK$2.8 – $94/100g）</option>
+                <option value="premium">海味養生與刺身帶子（HK$17.8 – $279/100g）</option>
+              </select>
+            </div>
+            <div class="chart-container">
+              <canvas id="priceBenchmarkChart"></canvas>
+            </div>
+            <div class="mt-3 p-3 rounded-xl bg-sage-50/80 border border-sage-200 text-xs text-sage-900 leading-relaxed">
+              <strong>💡 關鍵定價洞見：</strong>小家庭對「單包結帳總價」的敏感度遠高於「每 100g 單價」。例如樓上 8 兩裝東非花膠筒會員價需 $598–$845，臻品薈改推 <strong>100g 輕量裝（$198–$238）</strong>，入手門檻大降逾六成同時守穩 45% 毛利；400g 無激素雞中翼（$42）亦遠較惠康 280g 冰鮮（$49.9，即 $17.82/100g）抵食。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-sku" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/80 shadow-sm">
+        <span class="inline-block text-xs font-semibold uppercase tracking-wider text-sage-700 bg-sage-50 px-2.5 py-1 rounded-md mb-2">貨架組合與毛利結構設計</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-ink mb-2">四大品類 28 款核心 SKU 試點組合與五大「一餐解決方案」套餐</h2>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          為在開業第 3–5 個月跑出最高坪效與現金周轉，貨架收斂至 28 款核心 SKU，並按「引流防禦（4款）、高頻回購（11款）、場景加購（6款）、利潤形象（7款）」分工，將綜合加權毛利率推升至 <strong>34.67%</strong>。您可點擊任意套餐查看跨品類結構，或按品類、商業角色與關鍵字篩選全部 28 款商品與採購成本紅線。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-ink mb-1">四品類目標營收佔比 vs 加權毛利率</h3>
+            <p class="text-xs text-stone-500 mb-3">肉類負責 38% 進店流量，海味（42.66%）與進口雜貨（40.15%）負責拉高整體毛利至 34.67%</p>
+            <div class="chart-container">
+              <canvas id="categoryMixChart"></canvas>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-stone-100 text-xs">
+            <div class="p-2 rounded-lg bg-alabaster">
+              <span class="font-bold text-ink">🥩 肉類 (8 SKU)</span>：營收 38%｜毛利 27.12%
+            </div>
+            <div class="p-2 rounded-lg bg-alabaster">
+              <span class="font-bold text-terracotta-700">🦪 海味 (6 SKU)</span>：營收 22%｜毛利 42.66%
+            </div>
+            <div class="p-2 rounded-lg bg-alabaster">
+              <span class="font-bold text-sage-800">🍜 雜貨 (7 SKU)</span>：營收 20%｜毛利 40.15%
+            </div>
+            <div class="p-2 rounded-lg bg-alabaster">
+              <span class="font-bold text-sky-800">❄️ 急凍 (7 SKU)</span>：營收 20%｜毛利 34.75%
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+              <h3 class="text-base font-bold text-ink">🍱 五大跨品類「一餐解決方案」場景套餐</h3>
+              <p class="text-xs text-stone-500">嚴守折後毛利率 ≥26.0% 紀律，把常溫高毛利雜貨嵌入凍肉購買動線</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-sage-100 text-sage-800">平均套餐客單 HK$184.8</span>
+          </div>
+          <div id="bundles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-ink">📋 28 款核心試點 SKU 定價與採購成本紅線總表</h3>
+            <p class="text-xs text-stone-500">「採購成本上限」為 Kick-off 第 1 週檢視供應商報價的財務紅線</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="sku-cat-filter" class="text-xs border border-stone-300 rounded-lg px-2.5 py-1.5 bg-alabaster font-medium">
+              <option value="ALL">全部品類（28 SKU）</option>
+              <option value="肉類">🥩 肉類（8 SKU｜佔比 38%）</option>
+              <option value="海味養生">🦪 海味養生（6 SKU｜佔比 22%）</option>
+              <option value="進口雜貨">🍜 進口雜貨（7 SKU｜佔比 20%）</option>
+              <option value="急凍品">❄️ 急凍品（7 SKU｜佔比 20%）</option>
+            </select>
+            <select id="sku-role-filter" class="text-xs border border-stone-300 rounded-lg px-2.5 py-1.5 bg-alabaster font-medium">
+              <option value="ALL">全部商業角色</option>
+              <option value="引流防禦款">引流防禦款（4 SKU）</option>
+              <option value="高頻回購款">高頻回購款（11 SKU）</option>
+              <option value="場景加購款">場景加購款（6 SKU）</option>
+              <option value="利潤形象款">利潤形象款（7 SKU）</option>
+            </select>
+            <input id="sku-search" type="text" placeholder="搜尋編號、名稱或產地..." class="text-xs border border-stone-300 rounded-lg px-3 py-1.5 bg-white w-44 sm:w-52">
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-stone-200 bg-alabaster text-stone-600">
+                <th class="py-2.5 px-2.5 font-semibold">編號</th>
+                <th class="py-2.5 px-2.5 font-semibold">品類</th>
+                <th class="py-2.5 px-2.5 font-semibold">試點 SKU 與核心規格</th>
+                <th class="py-2.5 px-2.5 font-semibold text-right">淨重</th>
+                <th class="py-2.5 px-2.5 font-semibold">商業角色</th>
+                <th class="py-2.5 px-2.5 font-semibold text-right">建議定價帶</th>
+                <th class="py-2.5 px-2.5 font-semibold text-right">中位價 (每100g)</th>
+                <th class="py-2.5 px-2.5 font-semibold text-right">目標毛利 (成本上限)</th>
+              </tr>
+            </thead>
+            <tbody id="sku-table-body" class="divide-y divide-stone-100"></tbody>
+          </table>
+        </div>
+        <div id="sku-count-label" class="text-xs text-stone-500 text-right">顯示 28 / 28 款 SKU</div>
+      </div>
+    </section>
+
+    <section id="tab-economics" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/80 shadow-sm">
+        <span class="inline-block text-xs font-semibold uppercase tracking-wider text-terracotta-600 bg-terracotta-50 px-2.5 py-1 rounded-md mb-2">財務壓力測試與監管紅線</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-ink mb-2">地舖單位經濟（P&L）盈虧平衡模擬器與香港法規必守紅線</h2>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          結合福全街 2026 年地舖叫租（HK$30k–$73k）及鄰區凍肉店實證電費，下方互動模擬器對比「低毛利純凍肉走量型（淨邊際貢獻率 20.5%）」與「臻品薈四品類選物型（淨邊際貢獻率 31.42%）」。您可切換三種固定成本情景或拖動滑桿，即時計算每月盈虧平衡營業額、日均所需訂單數及 12 個月屋苑滲透爬坡淨利，並查閱食環署、食安中心與海關三大合規紅線。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-ink">🎛️ 門店財務參數與滲透率模擬器</h3>
+            <span class="text-xs text-sage-700 font-semibold">即時動態計算</span>
+          </div>
+
+          <div>
+            <div class="text-xs font-semibold text-stone-600 mb-2">一鍵套用報告書三種固定成本情景：</div>
+            <div class="grid grid-cols-3 gap-2">
+              <button data-fixed="83000" class="preset-cost-btn px-2.5 py-2 rounded-xl border border-stone-200 bg-alabaster hover:bg-sage-50 text-xs font-medium text-center transition">
+                <div class="font-bold text-ink">HK$83,000</div>
+                <div class="text-[11px] text-stone-500">保守 400–500 呎</div>
+              </button>
+              <button data-fixed="105000" class="preset-cost-btn px-2.5 py-2 rounded-xl border-2 border-sage-700 bg-sage-50 text-xs font-medium text-center transition">
+                <div class="font-bold text-sage-800">HK$105,000</div>
+                <div class="text-[11px] text-sage-700">基準 550–700 呎</div>
+              </button>
+              <button data-fixed="140000" class="preset-cost-btn px-2.5 py-2 rounded-xl border border-stone-200 bg-alabaster hover:bg-sage-50 text-xs font-medium text-center transition">
+                <div class="font-bold text-ink">HK$140,000</div>
+                <div class="text-[11px] text-stone-500">高租 800–1,000 呎</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-2 border-t border-stone-100">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-stone-700">月固定營運成本（租管＋電費＋人工＋雜費）</span>
+                <span id="sim-fixed-val" class="font-bold text-ink tabular-nums">HK$105,000</span>
+              </div>
+              <input id="sim-fixed" type="range" min="65000" max="170000" step="1000" value="105000" class="w-full accent-sage-700">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-stone-700">臻品薈平均客單價（AOV）</span>
+                <span id="sim-aov-val" class="font-bold text-sage-700 tabular-nums">HK$210</span>
+              </div>
+              <input id="sim-aov" type="range" min="150" max="300" step="5" value="210" class="w-full accent-sage-700">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-stone-700">商圈 11,207 戶活躍家庭滲透率</span>
+                <span id="sim-pen-val" class="font-bold text-terracotta-600 tabular-nums">5.0%（560 戶）</span>
+              </div>
+              <input id="sim-pen" type="range" min="2.0" max="10.0" step="0.5" value="5.0" class="w-full accent-terracotta-600">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-stone-700">活躍家庭月均消費頻次</span>
+                <span id="sim-freq-val" class="font-bold text-ink tabular-nums">2.5 次/月</span>
+              </div>
+              <input id="sim-freq" type="range" min="1.5" max="4.0" step="0.1" value="2.5" class="w-full accent-sage-700">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-stone-100">
+            <div class="p-3 rounded-xl bg-sage-50 border border-sage-200">
+              <div class="text-[11px] text-sage-800 font-medium">臻品薈月盈虧平衡額</div>
+              <div id="out-be-elite" class="text-lg font-bold text-sage-900 tabular-nums mt-0.5">HK$334,182</div>
+              <div id="out-orders-elite" class="text-[11px] text-sage-700 mt-0.5">日均需 53.0 單</div>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50 border border-rose-200">
+              <div class="text-[11px] text-rose-800 font-medium">純凍肉走量型平衡額</div>
+              <div id="out-be-low" class="text-lg font-bold text-rose-900 tabular-nums mt-0.5">HK$512,195</div>
+              <div id="out-orders-low" class="text-[11px] text-rose-700 mt-0.5">日均需 113.8 單 (客單$150)</div>
+            </div>
+            <div class="col-span-2 p-3 rounded-xl bg-alabaster border border-stone-200 flex items-center justify-between">
+              <div>
+                <div class="text-xs text-stone-500">按當前滲透率推算月營業額與淨利</div>
+                <div id="out-proj-rev" class="text-sm font-bold text-ink tabular-nums mt-0.5">月營業額 HK$294,000（46.7 單/日）</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[11px] text-stone-500">推算月淨利</div>
+                <div id="out-proj-profit" class="text-base font-bold text-terracotta-600 tabular-nums">-HK$12,625</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+            <h3 class="text-base font-bold text-ink mb-1">盈虧平衡門檻對比與 12 個月滲透爬坡路徑</h3>
+            <p class="text-xs text-stone-500 mb-3">混業選物將淨邊際貢獻率由 20.5% 提升至 31.42%，令生存門檻大降 34.8%</p>
+            <div class="chart-container">
+              <canvas id="breakevenChart"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+            <h3 class="text-base font-bold text-ink mb-2">🚚 首 90 天三層冷鏈履約與免運門檻守則（嚴防運費吞噬毛利）</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div class="p-3 rounded-xl bg-sage-50 border border-sage-200">
+                <div class="font-bold text-sage-800">第一層：到店自取／WhatsApp 預留</div>
+                <div class="text-lg font-bold text-ink my-1">HK$0 門檻</div>
+                <div class="text-stone-600">主力推廣，零冷鏈運費損耗，配合隨袋煮食卡拉動回購。</div>
+              </div>
+              <div class="p-3 rounded-xl bg-alabaster border border-stone-200">
+                <div class="font-bold text-ink">第二層：大角咀步行 10 分鐘圈</div>
+                <div class="text-lg font-bold text-terracotta-600 my-1">滿 HK$350 免運</div>
+                <div class="text-stone-600">介於鴻記 $300 與營養豐 $400 之間，確保單張毛利逾 HK$110。</div>
+              </div>
+              <div class="p-3 rounded-xl bg-alabaster border border-stone-200">
+                <div class="font-bold text-ink">第三層：跨區冷鏈車隊外送</div>
+                <div class="text-lg font-bold text-stone-800 my-1">滿 HK$600 免運</div>
+                <div class="text-stone-600">對齊 MeatMania 門檻，未滿由客自付運費，絕不補貼虧損單。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <h3 class="text-base font-bold text-ink">🛡️ 香港監管合規紅線實務核對表（門市價牌、落地頁與社群文案必守）</h3>
+          <span class="text-xs font-semibold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-md">違例最高罰款 HK$50,000 至 HK$500,000</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-alabaster border border-stone-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sage-800">1. 食環署《食物業規例》第 132X 章</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800">最高罰 $50k＋監禁 6 月</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <strong>紅線：</strong>新鮮糧食店牌照 <code class="bg-white px-1 rounded">4662802118</code> 准售生鮮/冰鮮/冷藏肉類魚禽；未核實部份位置 B 食物製造廠牌照 <code class="bg-white px-1 rounded">4962814002</code> 歸屬前，嚴禁門店現場醃製加工。進貨單據須備存至少 <strong>60 天</strong>，嚴守冰鮮 0–4°C、急凍 -18°C 以下。
+            </p>
+            <div class="text-xs font-medium text-sage-800 bg-sage-50 p-2 rounded-lg">
+              ✅ 落地：落地頁頁尾與價目表固定列明牌照編號與登記地址；網銷前申請原牌照批註。
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-alabaster border border-stone-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sage-800">2. 食安中心《標籤規例》第 132W 章</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800">最高罰 $50k＋監禁 6 月</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <strong>紅線：</strong>營養聲稱有嚴格定量門檻（低脂 ≤3g/100g、低糖 ≤5g、低鈉 ≤120mg、高蛋白 ≥12g/100g）。<strong>關鍵陷阱：</strong>獲「小銷售量豁免」之進口貨，只要宣傳品載有任何營養聲稱即即時喪失豁免！
+            </p>
+            <div class="text-xs font-medium text-sage-800 bg-sage-50 p-2 rounded-lg">
+              ✅ 落地：無完整 1+7 營養標籤核數之商品，文案一律僅陳述客觀成分（「原味無醃製」「無添加味精」）。
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-alabaster border border-stone-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sage-800">3. 海關《商品說明條例》第 362 章</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800">公訴最高罰 $500k＋5 年</span>
+            </div>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              <strong>紅線：</strong>魚肉品種與原產地須有供應文件佐證（嚴防鯰魚充石班/龍脷柳）；香港 1 司馬斤 = 16 兩 ≈ 604.8g（異於內地 500g 市斤）；標示「原價/特價」時原價必須曾實際發售。
+            </p>
+            <div class="text-xs font-medium text-sage-800 bg-sage-50 p-2 rounded-lg">
+              ✅ 落地：全店海味統一標示「克(g)」淨重並附司馬兩對照；套餐採「單買總價對比組合價」。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-execution" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/80 shadow-sm">
+        <span class="inline-block text-xs font-semibold uppercase tracking-wider text-sage-700 bg-sage-50 px-2.5 py-1 rounded-md mb-2">文件二：XH Strategy 90 天項目規劃與交接總控</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-ink mb-2">五維診斷評分、16 項交付模組明細、動態甘特圖（2026-11-30 啟動）與 Handover 總表</h2>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          嚴格對齊《XH Strategy 交付物總目錄 v5》規範，為臻品薈量身定制 16 項核心模組（涵蓋 17 個交付物編號，AI 輔助工時 127.5–209 小時）與 4 項「暫不做負面清單」。您可透過下方<strong>「資料延遲順延模擬器（+N 日）」</strong>即時演練甘特圖日期自動平移規則，切換檢視交付物工時與前置清單，並直接勾選 16 項 Handover Checklist 追蹤帳戶 100% 歸屬客戶的結案進度。
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="text-base font-bold text-ink">開業第 2 個月五維診斷預評分</h3>
+            <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900">總分 25 / 100</span>
+          </div>
+          <p class="text-xs text-stone-500 mb-3">須於第 1 週 Kick-off 後以 DG-02 19 題問卷與店內 POS 實數完成最終校準</p>
+          <div class="chart-container">
+            <canvas id="diagnosticRadarChart"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm flex flex-col justify-between space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-ink mb-2">📐 「點餐三律」落地架構與暫不做負面清單</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs mb-4">
+              <div class="p-3 rounded-xl bg-sage-50 border border-sage-200">
+                <div class="font-bold text-sage-800">① 次序律（先後鐵律）</div>
+                <div class="text-stone-600 mt-1">SM-09 數據追蹤永遠最先；BS-02/04 定錨先於視覺；WD-07 落地頁上線先於 SM-03 廣告。</div>
+              </div>
+              <div class="p-3 rounded-xl bg-alabaster border border-stone-200">
+                <div class="font-bold text-ink">② 層級律（入口→90天）</div>
+                <div class="text-stone-600 mt-1">DG-02 診斷切入（30天簽約抵扣），Z1+Z2 組成 90 天套裝，第 13 週驗證回購再定 Z3 月費。</div>
+              </div>
+              <div class="p-3 rounded-xl bg-alabaster border border-stone-200">
+                <div class="font-bold text-ink">③ 三件律（聚焦三階段）</div>
+                <div class="text-stone-600 mt-1">事一建基定錨、事二冬至前上線、事三年貨獲客，堅決刪除無關重資產項目。</div>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-rose-50/70 border border-rose-200">
+              <div class="text-xs font-bold text-rose-900 mb-1.5">🚫 第一期明確列入「暫不做負面清單」（保護單店現金流）</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-rose-800">
+                <div>• <strong>暫不做 WD-04 完整網店</strong>（省 $60k–$250k，先用 WD-07＋WhatsApp/FPS 跑通）</div>
+                <div>• <strong>暫不做 BI-01~06 全套品牌重塑</strong>（資源集中 BI-08 門市三距離物料）</div>
+                <div>• <strong>暫緩 MC-05 長篇 SEO 博客與全面 GEO</strong>（地舖優先攻 GBP 與 1.5km 街坊）</div>
+                <div>• <strong>暫不外判 BI-05 吉祥物與大樣本問卷</strong>（改以門店 POS 實數與街坊訪談取代）</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-stone-600"><strong>16 項模組總工時：</strong>傳統 548–719h → <span class="text-sage-700 font-bold">AI 輔助 127.5–209h</span></span>
+            <span class="text-stone-500">原目錄逐項拆買市場參考估值：HK$389,000–$1,128,500（非單店打包報價）</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-ink">📅 90 天套裝甘特圖（B2 開始日 = 2026-11-30｜W1–W14）</h3>
+            <p class="text-xs text-stone-500">緊扣 <strong>12/22 冬至（W4）</strong> 與 <strong>2027/02/06 農曆年初一（W10）</strong> 雙消費節點</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 bg-alabaster px-3.5 py-2 rounded-xl border border-stone-200">
+            <label for="gantt-delay" class="text-xs font-semibold text-ink">⏱️ 模擬客戶延遲交資料（依賴順延規則）：</label>
+            <input id="gantt-delay" type="range" min="0" max="14" step="1" value="0" class="w-28 accent-terracotta-600">
+            <span id="gantt-delay-label" class="text-xs font-bold text-terracotta-600 tabular-nums w-20">+0 日（準時）</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-stone-200 bg-alabaster text-stone-600">
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">階段</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">編號</th>
+                <th class="py-2 px-2.5 font-semibold min-w-[220px]">任務名稱</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">負責</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">開始日</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">結束日</th>
+                <th class="py-2 px-2.5 font-semibold min-w-[260px]">W1 – W14 排程視圖（11/30 起）</th>
+              </tr>
+            </thead>
+            <tbody id="gantt-table-body" class="divide-y divide-stone-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-ink">📦 16 項核心交付模組明細（工時、KPI 與客戶前置資料清單）</h3>
+            <p class="text-xs text-stone-500">資料未齊，該項時鐘不起行；DG-02 費用於 30 天內簽約可全額抵扣</p>
+          </div>
+          <select id="module-stage-filter" class="text-xs border border-stone-300 rounded-lg px-2.5 py-1.5 bg-alabaster font-medium">
+            <option value="ALL">全部 16 項交付模組</option>
+            <option value="入口">入口診斷（DG-02）</option>
+            <option value="事一">事一：建基與定錨（5 項）</option>
+            <option value="事二">事二：冬至前轉化上線（4 項）</option>
+            <option value="事三">事三：年貨獲客與擴量（5 項）</option>
+            <option value="貫穿">貫穿覆盤（OP-01 ×3）</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="border-b border-stone-200 bg-alabaster text-stone-600">
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">編號</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap">階段</th>
+                <th class="py-2 px-2.5 font-semibold">交付物與臻品薈定制規格</th>
+                <th class="py-2 px-2.5 font-semibold">客戶需提供（前置資料）</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap text-right">AI 輔助工時</th>
+                <th class="py-2 px-2.5 font-semibold whitespace-nowrap text-right">市場參考價（非報價）</th>
+              </tr>
+            </thead>
+            <tbody id="modules-table-body" class="divide-y divide-stone-100"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base font-bold text-ink">✅ Handover Checklist（16 項模組交接驗收總表）</h3>
+              <p class="text-xs text-stone-500">鐵律：所有 GA4、GBP、域名、Ads 及社交帳戶一律開於「臻品薈」名下，退出零綁定</p>
+            </div>
+            <div class="text-right">
+              <span id="ho-progress-text" class="text-xs font-bold text-sage-700 tabular-nums">已完成 1 / 16 項（6%）</span>
+              <div class="w-36 h-2 bg-stone-200 rounded-full overflow-hidden mt-1">
+                <div id="ho-progress-bar" class="h-full bg-sage-700 transition-all duration-300" style="width: 6.25%"></div>
+              </div>
+            </div>
+          </div>
+          <div id="handover-list" class="space-y-2 max-h-[520px] overflow-y-auto custom-scrollbar pr-1"></div>
+        </div>
+
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm space-y-3">
+          <h3 class="text-base font-bold text-ink">🇭🇰 PM 工具箱與香港區執行適配守則</h3>
+          <div class="space-y-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/70">
+              <div class="font-bold text-ink">1. 輕量會議節奏（固定不加場）</div>
+              <div class="text-stone-600 mt-1">11/30 Kick-off（60分鐘）→ 逢週五 WhatsApp 3 行文字週更（不開會）→ 12/28、W8、W12 三次 30 分鐘一頁紙月度覆盤 → 2/26 結案簽收。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/70">
+              <div class="font-bold text-ink">2. 48 小時審批制與資料時鐘</div>
+              <div class="text-stone-600 mt-1">門店逾期 N 日提交成本或實拍圖，交付日自動順延 N 日；海報與帖文審批預設 48 小時，逾時按約定視為通過或順延。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/70">
+              <div class="font-bold text-ink">3. 香港本地平台與雙語原生策略</div>
+              <div class="text-stone-600 mt-1">主攻 <strong>Google Maps (GBP)＋繁中搜尋＋IG/FB 大角咀街坊群＋Threads</strong>，並以 <strong>小紅書</strong> 觸及利奧坊/形品·星寓新來港中產（繁簡分開原生撰寫，絕不機翻）。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/70">
+              <div class="font-bold text-ink">4. 香港低摩擦支付與 PDPO 私隱合規</div>
+              <div class="text-stone-600 mt-1">全面支援 <strong>FPS 轉數快、PayMe、八達通（含長者樂悠咭）、AlipayHK / WeChat Pay HK</strong>；WhatsApp 入群預留須徵得同意並附退出選項。</div>
+            </div>
+            <div class="p-3 rounded-xl bg-sage-50 border border-sage-200">
+              <div class="font-bold text-sage-800">5. 啟動前（2026-11-30）三項必備行動</div>
+              <ul class="text-sage-900 mt-1 space-y-1">
+                <li>• 備齊首 2 月 POS 銷量、現貨成本、租電單及核實牌照 4962814002 歸屬</li>
+                <li>• 備妥 BRN 80157118、牌照 4662802118 副本、Google 帳戶與門店實拍</li>
+                <li>• 鎖定 100g–150g 輕量無硫海味及冬至火鍋肉品 12 月試點貨源</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-stone-200 bg-white mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-500">
+      <div>臻品薈有限公司（Elite Collection Co., Limited）｜九龍大角咀福全街 6 號地下部份位置 A｜新鮮糧食店牌照：4662802118</div>
+      <div>商業策略、28-SKU 定價模型與 XH Strategy 90 天執行總控報告</div>
+    </div>
+  </footer>
+
+  <script>
+    const estatesData = [
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '形品·星寓（本廈基座）', units: 377, status: '物業平台核實', walk: '0 分鐘', pitch: '樓上住戶放工順路買餸，推 200–350g 獨立真空免洗切＋15 分鐘快煮套餐' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '利奧坊 1–5 期（曉岸/凱岸/曦岸/壹隅/首隅）', units: 2298, status: '物業平台核實', walk: '3–6 分鐘', pitch: '開放式及一房冰格細，痛恨 1kg 大裝，主攻獨立急凍雞柳、鯖魚及 100g 輕量花膠' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '奧柏·御峯', units: 464, status: '物業平台核實', walk: '2–4 分鐘', pitch: '年輕中產家庭，週末草飼西冷牛扒、北海道刺身帶子及日本無添加高湯包' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '亮賢居', units: 348, status: '物業平台核實', walk: '4–6 分鐘', pitch: '重視食安與乾淨標籤，主推無激素雞翼、日本鎌田低鹽醬油及無鹽蕎麥麵' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: 'i-Home', units: 185, status: '物業平台核實', walk: '2–4 分鐘', pitch: '單身及二人小戶，氣炸 10 分鐘挪威鯖魚柳及減鹽羽根煎餃' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '傲寓', units: 144, status: '物業平台核實', walk: '1–3 分鐘', pitch: '鄰近福全街頭，高蛋白健身雞胸、雞柳與一週備餐組合包' },
+      { ring: 'RING1', ringLabel: '核心一環（新樓）', name: '利·晴灣23', units: 142, status: '物業平台核實', walk: '3–5 分鐘', pitch: '小家庭平日快煮組及寒流二人圍爐火鍋套裝' },
+      { ring: 'RING2', ringLabel: '核心二環（成熟）', name: '港灣豪庭', units: 3520, status: '物業平台核實', walk: '5–8 分鐘', pitch: '大型中產屋苑，兼顧學童家庭（32 校網）無激素肉類、手工無防腐燒賣與假日火鍋' },
+      { ring: 'RING2', ringLabel: '核心二環（成熟）', name: '大同新邨', units: 2136, status: '模型估計（待覆核）', walk: '3–6 分鐘', pitch: '傳統大家庭與長者，主推 $35 無硫湯料包、美國響螺片、厚花菇配保濕豬展' },
+      { ring: 'RING2', ringLabel: '核心二環（成熟）', name: '富多來新邨', units: 700, status: '物業平台核實', walk: '3–5 分鐘', pitch: '重視性價比與老火靚湯，支援「買湯料配街市鮮豬肉」彈性組合' },
+      { ring: 'RING2', ringLabel: '核心二環（成熟）', name: '中美樓', units: 473, status: '物業平台核實', walk: '2–4 分鐘', pitch: '步行即達，日常雞中翼、雞上脾扒及八達通/樂悠咭低摩擦結帳' },
+      { ring: 'RING2', ringLabel: '核心二環（成熟）', name: '中和樓', units: 420, status: '物業平台核實', walk: '2–4 分鐘', pitch: '街坊日常補貨，提供圖文浸發卡降低海味烹調門檻' }
+    ];
+
+    const competitorsData = [
+      {
+        id: 'meatmania',
+        name: 'MeatMania',
+        badge: '本區頭號直接對手',
+        badgeColor: 'bg-rose-100 text-rose-800',
+        location: '福全街 78–80 號志發工廈 1 樓 B2 Showroom（11:00–19:30）',
+        strengths: '極強肉類專業：自家乾式熟成牛扒（供會所）、和牛、健身雞牛、阿嬤煲湯（石崇魚/鷓鴣）、寵物肉食及修切課。急凍滿 HK$600 免運。',
+        weaknesses: '位處工廈 1 樓，缺乏放工經過街頭的即時買餸衝動；欠缺系統化乾貨海味（花膠/元貝/花菇）與日常日台健康雜貨；多款健康湯品與健身牛肉 SKU 官網常顯示缺貨。',
+        counterStrategy: '善用福全街 6 號街頭地舖攔截下班人流，以 250g 小家庭裝（而非 0.5lb–2kg 業務裝）配無硫海味及日台醬料打造「一餐搞掂」體驗。'
+      },
+      {
+        id: 'nutrition',
+        name: '營養豐食品專門店',
+        badge: '品牌與模式核心對標',
+        badgeColor: 'bg-sage-100 text-sage-800',
+        location: '元朗大橋街市、將軍澳新都城 3 期（太古店已於 2026年11月15日結業）',
+        strengths: '主打無激素肉類、歐美水產、自設工場港韓醃肉（蜜汁雞扒曾見 $30）、蘭王蛋 $34 引流及「節日不加價」，熟客黏性極高。',
+        weaknesses: '九龍西及大角咀並無實體門市；未見系統化海味養生乾貨及日台精品雜貨線；重資產自設工場加工模式不適合單店初創直接複製。',
+        counterStrategy: '學習其「3–5 款指定回購招牌貨＋選貨嚴謹口碑」，以輕資產委外加工（香港持牌工場燒賣/預包裝無激素肉）填補大角咀空白。'
+      },
+      {
+        id: 'ds',
+        name: '大生生活超市 DS Groceries',
+        badge: '雜貨與海味價格錨點',
+        badgeColor: 'bg-amber-100 text-amber-900',
+        location: '全港逾 80 間門市（鄰近深水埗 V Walk 設店）',
+        strengths: '重度促銷機器：每月 18–25 號 Flash Sale、滿 $100 送 $20 翌日券、長者日 9 折、APP 限時搶購，2026 年力推日式急凍品與名店火鍋湯底。',
+        weaknesses: '肉類選貨欠專業部位與烹調解說；走「反通脹平貨尋寶」路線，清潔成分非強項（消委會測試其三花臘腸錄最高總脂肪）；海味大促綁高門檻且缺新手浸發指引。',
+        counterStrategy: '絕不與大生硬拚大眾零食平貨，改打「乾淨標籤（無味精/無硫/低鹽）」與「100g 輕量海味附圖文浸發卡」。'
+      },
+      {
+        id: 'hungkee',
+        name: '鴻記凍肉',
+        badge: '本區街市日常替代者',
+        badgeColor: 'bg-stone-200 text-stone-800',
+        location: '福全街 63 號大角咀街市地下 M3 舖（07:00–20:00）',
+        strengths: '紮根街市多年，早市買餸客流穩定；提供大量醃製豬雞扒（454g）、火鍋片及雜貨；大角咀/深水埗等區滿 HK$300 免運。',
+        weaknesses: '傳統街市檔環境與陳列，欠缺精品選物感、營養成分透明度及海味與日台進口雜貨體驗，難以吸引利奧坊年輕中產住戶。',
+        counterStrategy: '以潔淨明亮選物店環境、獨立真空免洗切包裝及「無激素/產地透明」承接年輕家庭與重視食安的父母客群。'
+      },
+      {
+        id: 'laushang',
+        name: '樓上 HKJEBN／尚品／安記',
+        badge: '海味乾貨透明價基準',
+        badgeColor: 'bg-terracotta-100 text-terracotta-800',
+        location: '連鎖樓上舖、商場店（尚品約 80 店）及網店',
+        strengths: '海味等級與會員價高度透明（花膠筒、北海道元貝、花菇、湯包），節日禮盒與滿額贈品成熟（尚品滿 $800 免運）。',
+        weaknesses: '樓上多以半斤（8 兩）或一斤起賣，元貝與花膠單次入手門檻動輒 HK$400–$1,000+，令小家庭與年輕夫婦卻步。',
+        counterStrategy: '將同級東非花膠筒、北海道小元貝及美國響螺片拆細為 100g 迷你試用罐/袋（HK$108–$238），總價親民同時穩賺 42%–45% 毛利。'
+      },
+      {
+        id: 'supermarket',
+        name: '百佳／惠康／759／佳寶',
+        badge: '大眾日常與低價底線',
+        badgeColor: 'bg-sky-100 text-sky-800',
+        location: '全港密集地舖及網店',
+        strengths: '京東入主佳寶後連推全場 8 折戰；759 肥牛買一送一 $59/斤（會員 77 折）；百佳惠康覆蓋日常標準補貨。',
+        weaknesses: '欠缺專人煮法推薦；超市小包裝無激素肉品單價反偏高（如惠康 280g 冰鮮 S-Pure 雞翼售 $49.9，折合 $17.82/100g）。',
+        counterStrategy: '400g 泰國無激素雞中翼定價 $42（$10.50/100g），較惠康小裝冰鮮便宜逾四成，且比佳寶更具無激素品質信任感。'
+      }
+    ];
+
+    const skuData = [
+      { id: 'M-01', cat: '肉類', name: '泰國無激素走地雞柳（獨立急凍）', spec: '泰國無激素／無抗生素，獨立快取', weight: '300g', role: '引流防禦款', range: '$28–$32', mid: 29, per100: '$9.67', gm: '22%', costCap: '$22.6' },
+      { id: 'M-02', cat: '肉類', name: '泰國 S-Pure／泰康級無激素雞中翼', spec: '泰國無激素（約 8–10 隻小家庭裝）', weight: '400g', role: '高頻回購款', range: '$38–$44', mid: 42, per100: '$10.50', gm: '24%', costCap: '$31.9' },
+      { id: 'M-03', cat: '肉類', name: '泰國無激素去皮去骨雞上脾扒', spec: '泰國無激素（2 件獨立真空，免切）', weight: '350g', role: '高頻回購款', range: '$34–$39', mid: 36, per100: '$10.29', gm: '25%', costCap: '$27.0' },
+      { id: 'M-04', cat: '肉類', name: '加拿大無激素保濕豬展（切件煲湯裝）', spec: '加拿大 Savoury Choice 同級，配海味煲湯', weight: '350g', role: '場景加購款', range: '$44–$50', mid: 46, per100: '$13.14', gm: '26%', costCap: '$34.0' },
+      { id: 'M-05', cat: '肉類', name: '日本北海道四元豚／黑豚梅頭薄片', spec: '日本北海道（火鍋／薑汁燒肉兩用）', weight: '250g', role: '高頻回購款', range: '$56–$64', mid: 59, per100: '$23.60', gm: '28%', costCap: '$42.5' },
+      { id: 'M-06', cat: '肉類', name: '美國安格斯穀飼肥牛片（雪花／板腱）', spec: '美國 CAB／Prime 級（2 人份不結冰塊）', weight: '250g', role: '高頻回購款', range: '$58–$68', mid: 62, per100: '$24.80', gm: '28%', costCap: '$44.6' },
+      { id: 'M-07', cat: '肉類', name: '紐西蘭 100% 草飼 PS 西冷／肉眼牛扒', spec: '紐西蘭 Silver Fern 同級（厚切 2cm）', weight: '250g', role: '利潤形象款', range: '$72–$85', mid: 78, per100: '$31.20', gm: '32%', costCap: '$53.0' },
+      { id: 'M-08', cat: '肉類', name: '澳洲 M6–7 和牛西冷／西班牙橡果黑豚鞍扒', spec: '澳洲和牛 M6–7 或西班牙 Bellota 級', weight: '250g', role: '利潤形象款', range: '$138–$168', mid: 158, per100: '$63.20', gm: '35%', costCap: '$102.7' },
+      { id: 'D-01', cat: '海味養生', name: '無硫花膠螺片海底椰／姬松茸湯料包', spec: '香港無硫配比（2–3 人份，免繁複配藥）', weight: '110g', role: '引流防禦款', range: '$32–$38', mid: 35, per100: '$31.82', gm: '42%', costCap: '$20.3' },
+      { id: 'D-02', cat: '海味養生', name: '特級無腳原木厚花菇（小家庭裝）', spec: '精選已剪蒂厚身花菇，免修剪直接浸發', weight: '150g', role: '高頻回購款', range: '$48–$58', mid: 52, per100: '$34.67', gm: '40%', costCap: '$31.2' },
+      { id: 'D-03', cat: '海味養生', name: '原色無硫姬松茸／金蟲草花（拉鍊裝）', spec: '天然無硫日曬，密封保鮮拉鍊袋', weight: '100g', role: '場景加購款', range: '$38–$48', mid: 42, per100: '$42.00', gm: '44%', costCap: '$23.5' },
+      { id: 'D-04', cat: '海味養生', name: '日本北海道 S／SA 小元貝（迷你試用罐）', spec: '日本北海道直送（100g 密封罐，免買半斤）', weight: '100g', role: '利潤形象款', range: '$148–$178', mid: 158, per100: '$158.00', gm: '42%', costCap: '$91.6' },
+      { id: 'D-05', cat: '海味養生', name: '美國野生無硫生曬響螺片（湯用裝）', spec: '美國野生足乾無硫（約 6–8 片，夠煲 2–3 次）', weight: '100g', role: '利潤形象款', range: '$108–$128', mid: 118, per100: '$118.00', gm: '43%', costCap: '$67.3' },
+      { id: 'D-06', cat: '海味養生', name: '東非清水特選花膠筒（新手輕量裝）', spec: '東非鱸魚膠（約 10–14 隻，附圖文浸發卡）', weight: '100g', role: '利潤形象款', range: '$198–$238', mid: 218, per100: '$218.00', gm: '45%', costCap: '$119.9' },
+      { id: 'P-01', cat: '進口雜貨', name: '日本名店火鍋湯底（雞白湯／貝汁／豆乳）', spec: '日本進口無防腐劑（2–3 人份圍爐即倒）', weight: '750g', role: '引流防禦款', range: '$26–$32', mid: 28, per100: '$3.73', gm: '34%', costCap: '$18.5' },
+      { id: 'P-02', cat: '進口雜貨', name: '日本鎌田低鹽／原味萬能高湯醬油', spec: '日本香川縣 1789 年老店（200ml 密封紙盒）', weight: '200ml', role: '場景加購款', range: '$34–$42', mid: 38, per100: '$19.00', gm: '40%', costCap: '$22.8' },
+      { id: 'P-03', cat: '進口雜貨', name: '日本無添加名店燒肉汁／蘋果燒肉醬', spec: '日本無味精／無色素（味研／川中級）', weight: '240g', role: '場景加購款', range: '$48–$56', mid: 52, per100: '$21.67', gm: '40%', costCap: '$31.2' },
+      { id: 'P-04', cat: '進口雜貨', name: '日本天然無添加高湯包（鰹魚昆布／減鹽）', spec: '日本九州／久世福同級，無化學調味（12–15 包）', weight: '120g', role: '利潤形象款', range: '$78–$98', mid: 88, per100: '$73.33', gm: '44%', costCap: '$49.3' },
+      { id: 'P-05', cat: '進口雜貨', name: '台灣手工日曬無添加拌麵（4 包裝）', spec: '台灣非油炸日曬關廟麵（如神農／大甲級）', weight: '440g', role: '高頻回購款', range: '$48–$56', mid: 52, per100: '$11.82', gm: '38%', costCap: '$32.2' },
+      { id: 'P-06', cat: '進口雜貨', name: '日本 Hakubaku 無鹽蕎麥麵／十六穀米', spec: '日本無鹽／高纖健康主食（180–250g）', weight: '250g', role: '高頻回購款', range: '$38–$46', mid: 42, per100: '$16.80', gm: '42%', costCap: '$24.4' },
+      { id: 'P-07', cat: '進口雜貨', name: '秘魯有機三色藜麥／冷壓特級初榨橄欖油', spec: '有機認證或高煙點冷壓無添加（400g/ml）', weight: '400g/ml', role: '利潤形象款', range: '$58–$72', mid: 65, per100: '$16.25', gm: '44%', costCap: '$36.4' },
+      { id: 'F-01', cat: '急凍品', name: '日本無添加鹽稻庭風急凍讚岐烏冬', spec: '日本直送（3 食入，滾水 2 分鐘快煮）', weight: '540g', role: '引流防禦款', range: '$32–$36', mid: 34, per100: '$6.30', gm: '30%', costCap: '$23.8' },
+      { id: 'F-02', cat: '急凍品', name: '挪威無鹽急凍鯖魚柳（獨立真空 2 片）', spec: '挪威冰冷海域無鹽（Omega-3，氣炸 10 分鐘）', weight: '280g', role: '高頻回購款', range: '$34–$42', mid: 38, per100: '$13.57', gm: '35%', costCap: '$24.7' },
+      { id: 'F-03', cat: '急凍品', name: '香港手工無防腐劑燒賣／陳皮牛肉球', spec: '香港持牌工場製作（12–15 粒，避超市粉感）', weight: '300g', role: '高頻回購款', range: '$45–$52', mid: 48, per100: '$16.00', gm: '36%', costCap: '$30.7' },
+      { id: 'F-04', cat: '急凍品', name: '香港製／泰國無激素低脂即食舒肥雞胸', spec: '高蛋白（須核實標籤 ≥12g/100g），3 包組', weight: '300g', role: '高頻回購款', range: '$48–$56', mid: 52, per100: '$17.33', gm: '36%', costCap: '$33.3' },
+      { id: 'F-05', cat: '急凍品', name: '日本北海道 2L／3S 刺身級急凍帶子（小裝）', spec: '日本北海道原裝（250g 約 10–12 粒）', weight: '250g', role: '利潤形象款', range: '$68–$78', mid: 72, per100: '$28.80', gm: '34%', costCap: '$47.5' },
+      { id: 'F-06', cat: '急凍品', name: '高含量黑虎蝦滑／日本居酒屋柚子鹽麴魚', spec: '90%+ 純蝦肉滑（150g）或日式氣炸主菜', weight: '150g', role: '場景加購款', range: '$34–$39', mid: 36, per100: '$24.00', gm: '38%', costCap: '$22.3' },
+      { id: 'F-07', cat: '急凍品', name: '日本減鹽 40% 羽根煎餃／台灣無反式脂蔥抓餅', spec: '免油免水快煮（276g 12 隻）或台灣手工 5 片', weight: '300g', role: '場景加購款', range: '$32–$38', mid: 35, per100: '$11.67', gm: '35%', costCap: '$22.8' }
+    ];
+
+    const bundlesData = [
+      {
+        code: 'B1',
+        name: '平日 15 分鐘二人快煮餐',
+        items: 'M-01 雞柳＋F-02 挪威鯖魚＋P-02 鎌田醬油＋F-01 稻庭烏冬',
+        orig: 139,
+        price: 128,
+        gm: '26.6%',
+        cost: '$93.9',
+        target: '利奧坊／形品·星寓雙職小夫婦（週一至四 17:30–20:00）'
+      },
+      {
+        code: 'B2',
+        name: '老火靚湯・無硫海味配肉組',
+        items: 'M-04 加拿大保濕豬展＋D-01 無硫湯料包＋D-05 美國響螺片',
+        orig: 199,
+        price: 185,
+        gm: '34.3%',
+        cost: '$121.6',
+        target: '港灣豪庭／大同新邨煮婦與長者（秋冬轉涼及週末煲湯日）'
+      },
+      {
+        code: 'B3',
+        name: '周末在家升級・二人牛扒海陸餐',
+        items: 'M-07 紐西蘭草飼西冷×2＋F-05 北海道帶子小裝＋P-03 無添加燒肉醬',
+        orig: 280,
+        price: 258,
+        gm: '28.4%',
+        cost: '$184.7',
+        target: '週末不想外出排隊的中產情侶（週五至週日重點陳列）'
+      },
+      {
+        code: 'B4',
+        name: '居家圍爐・日美雙豚肥牛二人鍋',
+        items: 'M-05 北海道豚梅片＋M-06 安格斯肥牛＋P-01 火鍋湯底＋F-06 黑虎蝦滑＋F-01 烏冬',
+        orig: 219,
+        price: 205,
+        gm: '26.0%',
+        cost: '$151.7',
+        target: '寒流及 12/22 冬至圍爐首選（上調 $7 穩守 26% 毛利紅線）'
+      },
+      {
+        code: 'B5',
+        name: '健身高蛋白・一週備餐包',
+        items: 'M-01 無激素雞柳＋M-03 去皮雞上脾扒＋F-04 舒肥雞胸＋P-06 無鹽蕎麥麵',
+        orig: 159,
+        price: 148,
+        gm: '27.5%',
+        cost: '$107.3',
+        target: '區內健身室會員與輕食白領（週日傍晚一週備餐補貨）'
+      }
+    ];
+
+    const ganttTasks = [
+      { stage: '啟動', code: '—', name: 'Kick-off 會議＋發出客戶資料清單', owner: '共同', offset: 0, dur: 2, type: 'normal' },
+      { stage: '啟動', code: '依賴', name: '客戶資料回收（現貨成本/實拍/Google 帳戶）', owner: '客戶', offset: 2, dur: 3, type: 'client' },
+      { stage: '入口', code: 'DG-02', name: '深度品牌診斷＋大角咀實地競品覆核（完成 80%）', owner: '我方', offset: 0, dur: 5, type: 'normal' },
+      { stage: '事一', code: 'SM-09', name: '數據基建（GA4／GSC／WhatsApp 與門市 QR 歸因）', owner: '我方', offset: 5, dur: 2, type: 's1' },
+      { stage: '事一', code: 'SM-10', name: 'Google 商家檔案（GBP）建置、認證與 NAP 對齊', owner: '共同', offset: 5, dur: 4, type: 's1' },
+      { stage: '事一', code: 'NA-03', name: '商標與中英撞名／AI 實體消歧檢視', owner: '我方', offset: 5, dur: 4, type: 's1' },
+      { stage: '事一', code: 'BS-02', name: '定位宣言與三層訊息屋（避開佳寶/大生價格戰）', owner: '我方', offset: 5, dur: 5, type: 's1' },
+      { stage: '事一', code: 'BS-04', name: '定價策略與 28-SKU 試點貨架／5 大套餐定錨', owner: '我方', offset: 7, dur: 5, type: 's1' },
+      { stage: '里程碑', code: 'M1', name: 'M1 事一驗收：GBP 上線＋定位與 28-SKU 定價定案', owner: '共同', offset: 11, dur: 1, type: 'milestone' },
+      { stage: '事二', code: 'MC-03', name: '服務貨架與 28-SKU＋5 大套餐價目頁（含牌照標示）', owner: '我方', offset: 12, dur: 4, type: 's2' },
+      { stage: '事二', code: 'WD-07+05', name: '高轉化單頁落地頁＋WhatsApp 預留取貨表單', owner: '我方', offset: 15, dur: 6, type: 's2' },
+      { stage: '事二', code: 'BI-08', name: '門市三距離空間視覺：櫥窗貼、冰櫃牌、浸發/氣炸卡', owner: '共同', offset: 12, dur: 9, type: 's2' },
+      { stage: '事二', code: 'MC-06', name: '信任資產公開化：收集 ≥20 條大角咀街坊 Google 好評', owner: '客戶主導', offset: 12, dur: 24, type: 's2' },
+      { stage: '里程碑', code: 'M2', name: 'M2 事二上線：冬至（12/22）前落地頁＋門市視覺跑通', owner: '共同', offset: 21, dur: 1, type: 'milestone' },
+      { stage: '事三', code: 'SM-04', name: '本區渠道取捨建議書（含「暫不做」負面清單）', owner: '我方', offset: 22, dur: 4, type: 's3' },
+      { stage: '事三', code: 'SM-02', name: '大角咀／奧運／旺角本地側翼關鍵字地圖（≥100 詞）', owner: '我方', offset: 22, dur: 4, type: 's3' },
+      { stage: '事三', code: 'MC-04', name: '90 天內容日曆（冬至→聖誕→2/6 農曆新年年貨期）', owner: '我方', offset: 26, dur: 3, type: 's3' },
+      { stage: '事三', code: 'SM-05', name: '社群內容與街坊營運（IG/FB/Threads/小紅書 20 帖）', owner: '我方', offset: 29, dur: 52, type: 's3' },
+      { stage: '事三', code: 'SM-03', name: '本地 1.5km 圍欄廣告試點（火鍋＋年貨，嚴守 CPA）', owner: '我方', offset: 31, dur: 49, type: 's3' },
+      { stage: '貫穿', code: 'OP-01', name: '月度數據覆盤 ×3（12/28 冬至覆盤／W8 年貨／W12 回購）', owner: '共同', offset: 28, dur: 56, type: 'ops' },
+      { stage: '收尾', code: 'HO', name: 'Handover Checklist 逐項交接＋KPI 結案快照', owner: '我方', offset: 84, dur: 4, type: 'ops' },
+      { stage: '里程碑', code: 'M3', name: 'M3 90 日結案會＋第二期選單（評估 OP-03 或 WD-04）', owner: '共同', offset: 88, dur: 2, type: 'milestone' }
+    ];
+
+    const modulesDetailData = [
+      { code: 'DG-02', stage: '入口', title: '深度品牌診斷（承接本調查）', spec: '16–18 頁診斷報告＋90 分鐘工作坊，校準 POS 與成本', prereq: '19 題問卷；60 分鐘訪談；首 2 月 POS 概況與月租電費', aiHours: '6–8h', refPrice: 'HK$30,000–80,000' },
+      { code: 'SM-09', stage: '事一', title: '數據基建安裝（永遠最先做）', spec: 'GA4＋GSC＋WhatsApp 點擊／預留表單轉化＋門市 QR 碼', prereq: '客戶 Google 帳戶；域名部署權限；確認轉化定義', aiHours: '2–4h', refPrice: 'HK$12,000–40,000' },
+      { code: 'SM-10', stage: '事一', title: 'Google 商家檔案（GBP）建置優化', spec: '認證福全街 6 號 A 檔案＋NAP 對齊＋≥15 張實拍', prereq: 'Google 帳戶；BRN 80157118 及牌照 4662802118 副本', aiHours: '2–4h', refPrice: 'HK$6,000–20,000' },
+      { code: 'NA-03', stage: '事一', title: '商標與雙語可用性／實體消歧', spec: 'IPD 29/30/35 類商標庫＋域名＋AI 撞名四庫連查', prereq: '擬註冊商標類別確認（29 凍肉海味／30 醬麵／35 零售）', aiHours: '4–6h', refPrice: 'HK$15,000–40,000' },
+      { code: 'BS-02', stage: '事一', title: '定位宣言與訊息架構', spec: '定位宣言 1 句＋三層訊息屋（主張／支柱／牌照產地證據）', prereq: '創辦人訪談確認採購優勢；現有熟客 3–5 句真實原話', aiHours: '8–12h', refPrice: 'HK$50,000–150,000' },
+      { code: 'BS-04', stage: '事一', title: '定價策略與 28-SKU 貨架定錨', spec: '28-SKU 試點表＋5 大套餐（34.7% 毛利）＋三層配送守則', prereq: '現有全部供應商報價單、採購成本與現貨清單', aiHours: '6–10h', refPrice: 'HK$40,000–100,000' },
+      { code: 'MC-03', stage: '事二', title: '服務貨架與場景套餐展示文案', spec: '28 款商品卡＋5 大套餐介紹（已過 132W／362 章合規核對）', prereq: '28 款試點 SKU 最終定案與實物營養標籤照片', aiHours: '4–8h', refPrice: 'HK$20,000–60,000' },
+      { code: 'WD-07+05', stage: '事二', title: '高轉化單頁落地頁＋基礎 SEO', spec: '單頁預留落地頁＋WhatsApp 預留表單＋JSON-LD／牌照展示', prereq: '客戶域名確認；店舖實拍；WhatsApp Business 號碼', aiHours: '12–22h', refPrice: 'HK$50,000–140,000' },
+      { code: 'BI-08', stage: '事二', title: '門市三距離空間視覺（輕量版）', spec: '櫥窗賣點貼、冰櫃 4 品類分區牌、花膠浸發／氣炸指引卡', prereq: '櫥窗及冰櫃呎吋照片；業主外牆規範；印刷預算', aiHours: '20–30h', refPrice: 'HK$40,000–150,000' },
+      { code: 'MC-06', stage: '事二', title: '信任資產公開化（街坊好評）', spec: '收銀 QR 立牌＋邀評話術＋收集 ≥20 條大角咀街坊好評', prereq: '店員配合隨袋派卡及邀請首購熟客評價', aiHours: '3–5h', refPrice: 'HK$12,000–35,000' },
+      { code: 'SM-04', stage: '事三', title: '本區社群渠道取捨建議書', spec: 'GBP＋IG/FB 街坊群＋Threads/小紅書取捨＋「暫不做」負面清單', prereq: '現有社交帳號權限及店員日常拍攝配合度', aiHours: '3–5h', refPrice: 'HK$15,000–40,000' },
+      { code: 'SM-02', stage: '事三', title: '大角咀本地側翼關鍵字地圖', spec: '≥100 個高意圖地區＋場景＋痛點關鍵字分組 Excel', prereq: '確認核心主推品類及「不售品類清單」', aiHours: '4–8h', refPrice: 'HK$15,000–45,000' },
+      { code: 'MC-04', stage: '事三', title: '90 天節慶與煮食內容日曆', spec: '≥30 題選題庫（12/22 冬至→聖誕→2/6 農曆新年年貨期）', prereq: '門店節日營業時間、新貨返貨期及年貨到貨時間', aiHours: '4–6h', refPrice: 'HK$15,000–45,000' },
+      { code: 'SM-05', stage: '事三', title: '社群內容創作與排程（2 個月）', spec: '每月 10 帖共 20 帖（15 秒氣炸／浸發短片與圖文）＋排程', prereq: '每兩週提供 30 分鐘門店手機實拍；遵守 48 小時審批', aiHours: '30–50h', refPrice: 'HK$30,000–80,000' },
+      { code: 'SM-03', stage: '事三', title: '本地 1.5km 圍欄廣告試點', spec: 'Google/Meta 1.5km 半徑精準投放（火鍋＋年貨）＋CPA 紀律', prereq: '客戶廣告帳戶＋信用卡直付廣告費（建議 $5k–$8k/月）', aiHours: '15–25h', refPrice: 'HK$24,000–67,500' },
+      { code: 'OP-01', stage: '貫穿', title: '月度數據覆盤包（×3 次）', spec: '12/28、W8、W12 一頁報告＋30 分鐘月會＋30/60 日回購基準', prereq: '每月固定 30 分鐘月會；當月 POS 品類銷量與損耗簡表', aiHours: '4.5–6h', refPrice: 'HK$15,000–36,000' }
+    ];
+
+    const handoverData = [
+      { code: 'DG-02', title: '深度品牌診斷與實數校準報告', spec: '16–18 頁 PDF＋競品與 POS 成本模型', account: '共享雲端 04-交付物', date: '2026-12-04', done: true },
+      { code: 'SM-09', title: '數據基建安裝（GA4／GSC／事件）', spec: 'GA4＋GSC＋WhatsApp/預留轉化＋門市 QR 碼', account: '客戶 Google 帳戶', date: '2026-12-06', done: false },
+      { code: 'SM-10', title: 'Google 商家檔案（GBP）建置優化', spec: '認證檔案＋門店實拍 ≥15 張＋28 SKU 陳列', account: '客戶 Google 帳戶 (GBP)', date: '2026-12-08', done: false },
+      { code: 'NA-03', title: '商標與中英實體消歧報告', spec: '29/30/35 類商標庫＋域名＋AI 混淆測試', account: '共享雲端 04-交付物', date: '2026-12-08', done: false },
+      { code: 'BS-02', title: '定位宣言與三層訊息屋', spec: '定位句 1 句＋三層訊息屋 PDF＋全渠道上線清單', account: '共享雲端 04-交付物', date: '2026-12-09', done: false },
+      { code: 'BS-04', title: '28-SKU 定價與 5 大套餐模型', spec: '28-SKU 價格表＋毛利測算＋三層配送門檻守則', account: '共享雲端 04-交付物', date: '2026-12-11', done: false },
+      { code: 'MC-03', title: '28-SKU 與套餐貨架文案', spec: '28 款商品卡＋5 大套餐頁（已過 132W/362 章核對）', account: '雲端 Master＋落地頁', date: '2026-12-15', done: false },
+      { code: 'WD-07+05', title: '單頁預留落地頁＋基礎 SEO', spec: '單頁落地頁＋預留表單＋JSON-LD／牌照展示', account: '客戶域名主機＋GitHub', date: '2026-12-20', done: false },
+      { code: 'BI-08', title: '門市三距離視覺與指引印刷檔', spec: '櫥窗貼＋冰櫃分區牌＋花膠浸發／氣炸卡源檔', account: '雲端源檔＋福全街現場', date: '2026-12-20', done: false },
+      { code: 'SM-04', title: '本區渠道取捨建議書', spec: '渠道定位＋「暫不做」負面清單 PDF', account: '共享雲端 04-交付物', date: '2026-12-25', done: false },
+      { code: 'SM-02', title: '大角咀本地側翼關鍵字地圖', spec: '≥100 詞按購買意圖分組 Excel 表', account: '共享雲端 04-交付物', date: '2026-12-25', done: false },
+      { code: 'MC-04', title: '90 天節慶煮食內容日曆', spec: '≥30 題選題庫（冬至→聖誕→農曆新年）', account: '共享雲端審批表單', date: '2026-12-28', done: false },
+      { code: 'MC-06', title: '信任資產公開化（街坊好評）', spec: '收銀 QR 牌＋邀評話術＋≥20 條 Google 好評', account: '客戶 GBP＋落地頁', date: '2027-01-04', done: false },
+      { code: 'SM-03', title: '本地 1.5km 圍欄廣告試點', spec: 'Google/Meta 廣告帳戶＋文案庫＋CPA 結案表', account: '客戶 Ads 帳戶（直付）', date: '2027-02-17', done: false },
+      { code: 'SM-05', title: '2 個月社群內容創作與營運', spec: '20 帖（含短片/圖文）排程＋月度素材包', account: '客戶 IG/FB/Threads/小紅書', date: '2027-02-18', done: false },
+      { code: 'OP-01', title: '月度數據覆盤包（×3）與回購基準', spec: '12/28、W8、W12 一頁報告＋30/60 日回購率基準', account: '共享雲端 05-數據報告', date: '2027-02-25', done: false }
+    ];
+
+    function wrapLabel(str) {
+      if (str.length <= 10) return str;
+      const lines = [];
+      for (let i = 0; i < str.length; i += 9) {
+        lines.push(str.slice(i, i + 9));
+      }
+      return lines;
+    }
+
+    let catchmentChartInstance = null;
+    let priceChartInstance = null;
+    let categoryMixChartInstance = null;
+    let breakevenChartInstance = null;
+    let radarChartInstance = null;
+
+    function initCharts() {
+      const ctxCatchment = document.getElementById('catchmentChart').getContext('2d');
+      catchmentChartInstance = new Chart(ctxCatchment, {
+        type: 'doughnut',
+        data: {
+          labels: ['利奧坊 1–5 期 (核實)', '其他新樓/星寓 (核實)', '港灣豪庭 (核實)', '大同新邨 (模型估計)', '富多來/中美/中和樓'],
+          datasets: [{
+            data: [2298, 1660, 3520, 2136, 1593],
+            backgroundColor: ['#234E3E', '#4C8570', '#B85D3B', '#D98A6C', '#E6B8A2'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '58%',
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                boxWidth: 11,
+                font: { size: 11 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  const val = ctx.parsed;
+                  const pct = ((val / 11207) * 100).toFixed(1);
+                  return ` ${ctx.label}: ${val.toLocaleString()} 伙 (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      initPriceChart('meat');
+
+      const ctxMix = document.getElementById('categoryMixChart').getContext('2d');
+      categoryMixChartInstance = new Chart(ctxMix, {
+        type: 'bar',
+        data: {
+          labels: ['肉類 (8 SKU)', '海味養生 (6 SKU)', '進口雜貨 (7 SKU)', '急凍品 (7 SKU)'],
+          datasets: [
+            {
+              label: '目標營收佔比 (%)',
+              data: [38.0, 22.0, 20.0, 20.0],
+              backgroundColor: '#C5BDB0',
+              borderRadius: 6
+            },
+            {
+              label: '品類加權毛利率 (%)',
+              data: [27.12, 42.66, 40.15, 34.75],
+              backgroundColor: ['#2D624E', '#B85D3B', '#234E3E', '#4C8570'],
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 50,
+              ticks: { callback: v => v + '%' }
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}%`
+              }
+            }
+          }
+        }
+      });
+
+      const ctxBe = document.getElementById('breakevenChart').getContext('2d');
+      breakevenChartInstance = new Chart(ctxBe, {
+        type: 'bar',
+        data: {
+          labels: ['純凍肉走量型平衡額', '臻品薈四品類平衡額', '第3–4月保守推算營收', '第6月基準推算營收', '第12月進取推算營收'].map(wrapLabel),
+          datasets: [{
+            label: '每月營業額 (HK$)',
+            data: [512195, 334182, 117600, 294000, 564480],
+            backgroundColor: ['#DC2626', '#234E3E', '#D6D3D1', '#B85D3B', '#2D624E'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { callback: v => '$' + (v / 10000).toFixed(0) + '萬' }
+            },
+            x: {
+              ticks: { font: { size: 11 } }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` HK$${Math.round(ctx.parsed.y).toLocaleString()}`
+              }
+            }
+          }
+        }
+      });
+
+      const ctxRadar = document.getElementById('diagnosticRadarChart').getContext('2d');
+      radarChartInstance = new Chart(ctxRadar, {
+        type: 'radar',
+        data: {
+          labels: ['① 定位清晰度', '② 獲客引擎', '③ 轉化資產', '④ 內容與信任', '⑤ 數據追蹤'],
+          datasets: [
+            {
+              label: '開業第 2 個月預評分 (25/100)',
+              data: [8, 5, 6, 4, 2],
+              backgroundColor: 'rgba(184, 93, 59, 0.22)',
+              borderColor: '#B85D3B',
+              pointBackgroundColor: '#B85D3B',
+              borderWidth: 2
+            },
+            {
+              label: '90 天結案目標水準 (81/100)',
+              data: [16, 15, 16, 16, 18],
+              backgroundColor: 'rgba(35, 78, 62, 0.16)',
+              borderColor: '#234E3E',
+              pointBackgroundColor: '#234E3E',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 20,
+              ticks: { stepSize: 5, font: { size: 10 } },
+              pointLabels: { font: { size: 11, weight: '600' } }
+            }
+          },
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+          }
+        }
+      });
+    }
+
+    function initPriceChart(group) {
+      const ctx = document.getElementById('priceBenchmarkChart').getContext('2d');
+      if (priceChartInstance) {
+        priceChartInstance.destroy();
+      }
+      const datasetConfig = group === 'meat' ? {
+        labels: ['無激素雞柳', '無激素雞中翼', '豚肉火鍋片', '肥牛火鍋片', '草飼西冷牛扒'].map(wrapLabel),
+        ranges: [[2.8, 33.6], [3.2, 17.82], [17.18, 52.67], [9.75, 49.09], [23.79, 94.0]],
+        elite: [9.67, 10.50, 23.60, 24.80, 31.20],
+        maxY: 100
+      } : {
+        labels: ['北海道刺身帶子', '美國野生響螺片', '北海道小元貝', '東非特選花膠筒'].map(wrapLabel),
+        ranges: [[17.8, 81.6], [86.0, 130.0], [125.3, 216.9], [158.7, 279.3]],
+        elite: [28.80, 118.00, 158.00, 218.00],
+        maxY: 300
+      };
+
+      priceChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: datasetConfig.labels,
+          datasets: [
+            {
+              label: '競品實測單價區間 (HK$/100g)',
+              data: datasetConfig.ranges,
+              backgroundColor: 'rgba(197, 189, 176, 0.65)',
+              borderColor: '#A8A29E',
+              borderWidth: 1,
+              borderRadius: 6,
+              borderSkipped: false
+            },
+            {
+              type: 'line',
+              label: '臻品薈試點中位單價 (HK$/100g)',
+              data: datasetConfig.elite,
+              backgroundColor: '#234E3E',
+              borderColor: '#234E3E',
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: datasetConfig.maxY,
+              ticks: { callback: v => '$' + v }
+            }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  if (Array.isArray(ctx.raw)) {
+                    return ` 市場區間: HK$${ctx.raw[0]} – HK$${ctx.raw[1]} /100g`;
+                  }
+                  return ` 臻品薈中位定價: HK$${ctx.raw} /100g`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderEstates() {
+      const ringVal = document.getElementById('estate-ring-filter').value;
+      const filtered = estatesData.filter(e => ringVal === 'ALL' || e.ring === ringVal);
+      const tbody = document.getElementById('estate-table-body');
+
+      tbody.innerHTML = filtered.map(e => `
+        <tr class="hover:bg-alabaster transition">
+          <td class="py-2.5 px-3 whitespace-nowrap">
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${e.ring === 'RING1' ? 'bg-sage-100 text-sage-800' : 'bg-terracotta-100 text-terracotta-800'}">${e.ringLabel}</span>
+          </td>
+          <td class="py-2.5 px-3 font-semibold text-ink">${e.name}</td>
+          <td class="py-2.5 px-3 text-right font-bold tabular-nums text-ink">${e.units.toLocaleString()} 伙</td>
+          <td class="py-2.5 px-3 whitespace-nowrap">
+            <span class="text-[11px] font-medium px-2 py-0.5 rounded ${e.status.includes('估計') ? 'bg-amber-100 text-amber-900' : 'bg-emerald-50 text-emerald-800'}">${e.status}</span>
+          </td>
+          <td class="py-2.5 px-3 whitespace-nowrap text-stone-600">${e.walk}</td>
+          <td class="py-2.5 px-3 text-xs text-stone-600">${e.pitch}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCompetitors() {
+      const listEl = document.getElementById('competitor-list');
+      const detailEl = document.getElementById('competitor-detail-card');
+
+      function selectComp(id) {
+        const comp = competitorsData.find(c => c.id === id) || competitorsData[0];
+        listEl.innerHTML = competitorsData.map(c => `
+          <button data-comp="${c.id}" class="comp-item-btn w-full text-left p-3.5 rounded-xl border transition-all ${c.id === comp.id ? 'bg-sage-50 border-sage-700 shadow-sm' : 'bg-white border-stone-200/80 hover:bg-alabaster'}">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-bold text-sm text-ink">${c.name}</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${c.badgeColor}">${c.badge}</span>
+            </div>
+            <div class="text-xs text-stone-500 mt-1 truncate">${c.location}</div>
+          </button>
+        `).join('');
+
+        detailEl.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 pb-3 mb-3">
+            <div>
+              <h4 class="text-lg font-bold text-ink">${comp.name}</h4>
+              <p class="text-xs text-stone-500 mt-0.5">📍 ${comp.location}</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${comp.badgeColor}">${comp.badge}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm mb-3">
+            <div class="p-3 rounded-xl bg-alabaster border border-stone-200/70">
+              <div class="font-bold text-ink mb-1">💪 核心優勢與促銷打法</div>
+              <p class="text-xs text-stone-600 leading-relaxed">${comp.strengths}</p>
+            </div>
+            <div class="p-3 rounded-xl bg-rose-50/70 border border-rose-200/70">
+              <div class="font-bold text-rose-900 mb-1">🔍 結構性弱點</div>
+              <p class="text-xs text-rose-800 leading-relaxed">${comp.weaknesses}</p>
+            </div>
+          </div>
+          <div class="p-3 rounded-xl bg-sage-50 border border-sage-200 text-xs">
+            <span class="font-bold text-sage-800">🎯 臻品薈破局切入點：</span>
+            <span class="text-sage-900">${comp.counterStrategy}</span>
+          </div>
+        `;
+
+        document.querySelectorAll('.comp-item-btn').forEach(btn => {
+          btn.addEventListener('click', () => selectComp(btn.dataset.comp));
+        });
+      }
+
+      selectComp('meatmania');
+    }
+
+    function renderBundles() {
+      const grid = document.getElementById('bundles-grid');
+      grid.innerHTML = bundlesData.map(b => `
+        <div class="p-3.5 rounded-xl bg-alabaster border border-stone-200/80 hover:border-sage-400 transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-sage-700 text-white">${b.code}</span>
+              <span class="text-xs font-bold text-sage-700">毛利率 ${b.gm}（成本上限 ${b.cost}）</span>
+            </div>
+            <h4 class="font-bold text-sm text-ink mt-1">${b.name}</h4>
+            <p class="text-xs text-stone-600 mt-1 leading-relaxed">${b.items}</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-stone-200/70 flex items-center justify-between">
+            <span class="text-[11px] text-stone-500 max-w-[62%]">${b.target}</span>
+            <div class="text-right tabular-nums">
+              <span class="text-xs line-through text-stone-400">HK$${b.orig}</span>
+              <span class="text-base font-bold text-terracotta-600 ml-1">HK$${b.price}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSkus() {
+      const catVal = document.getElementById('sku-cat-filter').value;
+      const roleVal = document.getElementById('sku-role-filter').value;
+      const searchVal = document.getElementById('sku-search').value.trim().toLowerCase();
+
+      const filtered = skuData.filter(item => {
+        const matchCat = catVal === 'ALL' || item.cat === catVal;
+        const matchRole = roleVal === 'ALL' || item.role === roleVal;
+        const matchSearch = !searchVal ||
+          item.id.toLowerCase().includes(searchVal) ||
+          item.name.toLowerCase().includes(searchVal) ||
+          item.spec.toLowerCase().includes(searchVal);
+        return matchCat && matchRole && matchSearch;
+      });
+
+      const roleBadgeMap = {
+        '引流防禦款': 'bg-sky-100 text-sky-800',
+        '高頻回購款': 'bg-sage-100 text-sage-800',
+        '場景加購款': 'bg-amber-100 text-amber-900',
+        '利潤形象款': 'bg-terracotta-100 text-terracotta-800'
+      };
+
+      const tbody = document.getElementById('sku-table-body');
+      tbody.innerHTML = filtered.map(s => `
+        <tr class="hover:bg-alabaster transition">
+          <td class="py-2.5 px-2.5 font-bold text-ink whitespace-nowrap tabular-nums">${s.id}</td>
+          <td class="py-2.5 px-2.5 text-xs text-stone-600 whitespace-nowrap">${s.cat}</td>
+          <td class="py-2.5 px-2.5">
+            <div class="font-semibold text-ink">${s.name}</div>
+            <div class="text-[11px] text-stone-500">${s.spec}</div>
+          </td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap text-stone-700 tabular-nums">${s.weight}</td>
+          <td class="py-2.5 px-2.5 whitespace-nowrap">
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${roleBadgeMap[s.role] || 'bg-stone-100'}">${s.role}</span>
+          </td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap text-stone-600 tabular-nums">${s.range}</td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap font-bold text-ink tabular-nums">HK$${s.mid} <span class="text-[11px] font-normal text-stone-500">(${s.per100})</span></td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap font-bold text-sage-700 tabular-nums">${s.gm} <span class="text-[11px] font-normal text-stone-500">(${s.costCap})</span></td>
+        </tr>
+      `).join('');
+
+      document.getElementById('sku-count-label').textContent = `顯示 ${filtered.length} / ${skuData.length} 款 SKU`;
+    }
+
+    function updateSimulator() {
+      const fixedCost = Number(document.getElementById('sim-fixed').value);
+      const aov = Number(document.getElementById('sim-aov').value);
+      const pen = Number(document.getElementById('sim-pen').value);
+      const freq = Number(document.getElementById('sim-freq').value);
+
+      document.getElementById('sim-fixed-val').textContent = `HK$${fixedCost.toLocaleString()}`;
+      document.getElementById('sim-aov-val').textContent = `HK$${aov}`;
+      const households = Math.round(11207 * (pen / 100));
+      document.getElementById('sim-pen-val').textContent = `${pen.toFixed(1)}%（${households.toLocaleString()} 戶）`;
+      document.getElementById('sim-freq-val').textContent = `${freq.toFixed(1)} 次/月`;
+
+      const netContribElite = 0.3142;
+      const netContribLow = 0.205;
+
+      const beElite = fixedCost / netContribElite;
+      const beLow = fixedCost / netContribLow;
+
+      const ordersElite = beElite / 30 / aov;
+      const ordersLow = beLow / 30 / 150;
+
+      const projRev = households * freq * aov;
+      const projDailyOrders = projRev / 30 / aov;
+      const projProfit = projRev * netContribElite - fixedCost;
+
+      document.getElementById('out-be-elite').textContent = `HK$${Math.round(beElite).toLocaleString()}`;
+      document.getElementById('out-orders-elite').textContent = `日均需 ${ordersElite.toFixed(1)} 單`;
+
+      document.getElementById('out-be-low').textContent = `HK$${Math.round(beLow).toLocaleString()}`;
+      document.getElementById('out-orders-low').textContent = `日均需 ${ordersLow.toFixed(1)} 單 (客單$150)`;
+
+      document.getElementById('out-proj-rev').textContent = `月營業額 HK$${Math.round(projRev).toLocaleString()}（${projDailyOrders.toFixed(1)} 單/日）`;
+      const profitEl = document.getElementById('out-proj-profit');
+      if (projProfit >= 0) {
+        profitEl.textContent = `+HK$${Math.round(projProfit).toLocaleString()}`;
+        profitEl.className = 'text-base font-bold text-sage-700 tabular-nums';
+      } else {
+        profitEl.textContent = `-HK$${Math.abs(Math.round(projProfit)).toLocaleString()}`;
+        profitEl.className = 'text-base font-bold text-terracotta-600 tabular-nums';
+      }
+
+      if (breakevenChartInstance) {
+        breakevenChartInstance.data.datasets[0].data = [
+          Math.round(beLow),
+          Math.round(beElite),
+          117600,
+          Math.round(projRev),
+          564480
+        ];
+        breakevenChartInstance.data.labels[3] = wrapLabel(`當前模擬 (${pen.toFixed(1)}%滲透)`);
+        breakevenChartInstance.update();
+      }
+    }
+
+    function addDays(baseStr, days) {
+      const parts = baseStr.split('-').map(Number);
+      const d = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+      d.setUTCDate(d.getUTCDate() + days);
+      const yyyy = d.getUTCFullYear();
+      const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(d.getUTCDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function renderGantt(delayDays) {
+      const baseStart = '2026-11-30';
+      const totalSpan = 98 + delayDays;
+      const tbody = document.getElementById('gantt-table-body');
+
+      const barColorMap = {
+        normal: 'bg-stone-500',
+        client: 'bg-amber-500',
+        s1: 'bg-sage-700',
+        s2: 'bg-terracotta-600',
+        s3: 'bg-sky-700',
+        ops: 'bg-emerald-600',
+        milestone: 'bg-rose-600'
+      };
+
+      tbody.innerHTML = ganttTasks.map(t => {
+        const effectiveOffset = t.offset === 0 ? 0 : t.offset + delayDays;
+        const startStr = addDays(baseStart, effectiveOffset);
+        const endStr = addDays(baseStart, effectiveOffset + t.dur - 1);
+        const leftPct = Math.min(96, (effectiveOffset / totalSpan) * 100);
+        const widthPct = Math.max(2.2, (t.dur / totalSpan) * 100);
+        const isMilestone = t.type === 'milestone';
+
+        return `
+          <tr class="${isMilestone ? 'bg-rose-50/60 font-semibold' : 'hover:bg-alabaster'}">
+            <td class="py-2 px-2.5 whitespace-nowrap text-stone-600">${t.stage}</td>
+            <td class="py-2 px-2.5 whitespace-nowrap font-bold text-ink tabular-nums">${t.code}</td>
+            <td class="py-2 px-2.5 text-ink">${t.name}</td>
+            <td class="py-2 px-2.5 whitespace-nowrap text-stone-600">${t.owner}</td>
+            <td class="py-2 px-2.5 whitespace-nowrap tabular-nums text-stone-700">${startStr}</td>
+            <td class="py-2 px-2.5 whitespace-nowrap tabular-nums text-stone-700">${endStr}</td>
+            <td class="py-2 px-2.5">
+              <div class="w-full h-3.5 bg-stone-100 rounded-full relative overflow-hidden">
+                <div class="h-full rounded-full ${barColorMap[t.type]}" style="margin-left: ${leftPct}%; width: ${widthPct}%;"></div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderModulesDetail() {
+      const stageVal = document.getElementById('module-stage-filter').value;
+      const filtered = modulesDetailData.filter(m => stageVal === 'ALL' || m.stage === stageVal);
+      const tbody = document.getElementById('modules-table-body');
+
+      tbody.innerHTML = filtered.map(m => `
+        <tr class="hover:bg-alabaster transition">
+          <td class="py-2.5 px-2.5 font-bold text-ink whitespace-nowrap tabular-nums">${m.code}</td>
+          <td class="py-2.5 px-2.5 whitespace-nowrap text-stone-600">${m.stage}</td>
+          <td class="py-2.5 px-2.5">
+            <div class="font-semibold text-ink">${m.title}</div>
+            <div class="text-[11px] text-stone-500">${m.spec}</div>
+          </td>
+          <td class="py-2.5 px-2.5 text-xs text-stone-600">${m.prereq}</td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap font-bold text-sage-700 tabular-nums">${m.aiHours}</td>
+          <td class="py-2.5 px-2.5 text-right whitespace-nowrap text-stone-500 tabular-nums">${m.refPrice}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderHandover() {
+      const listEl = document.getElementById('handover-list');
+      const doneCount = handoverData.filter(h => h.done).length;
+      const pct = Math.round((doneCount / handoverData.length) * 100);
+
+      document.getElementById('ho-progress-text').textContent = `已完成 ${doneCount} / ${handoverData.length} 項（${pct}%）`;
+      document.getElementById('ho-progress-bar').style.width = `${pct}%`;
+
+      listEl.innerHTML = handoverData.map((item, idx) => `
+        <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${item.done ? 'bg-sage-50/70 border-sage-300' : 'bg-alabaster border-stone-200/80 hover:bg-white'}">
+          <input type="checkbox" data-ho-idx="${idx}" ${item.done ? 'checked' : ''} class="mt-1 rounded text-sage-700 focus:ring-sage-700">
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-center justify-between gap-1">
+              <span class="text-xs sm:text-sm font-bold ${item.done ? 'line-through text-stone-400' : 'text-ink'}">${item.code}｜${item.title}</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-white border border-stone-200 text-stone-600 tabular-nums">預計 ${item.date}</span>
+            </div>
+            <div class="text-xs text-stone-500 mt-0.5">${item.spec}</div>
+            <div class="text-[11px] text-sage-700 font-medium mt-0.5">🔑 帳戶歸屬：${item.account}</div>
+          </div>
+        </label>
+      `).join('');
+
+      document.querySelectorAll('input[data-ho-idx]').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const i = Number(e.target.dataset.hoIdx);
+          handoverData[i].done = e.target.checked;
+          renderHandover();
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const navButtons = document.querySelectorAll('.nav-btn');
+      const tabPanels = document.querySelectorAll('.tab-panel');
+
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.tab;
+          navButtons.forEach(b => {
+            b.classList.remove('nav-pill-active');
+            b.classList.add('bg-white', 'text-stone-700', 'border', 'border-stone-200');
+          });
+          btn.classList.add('nav-pill-active');
+          btn.classList.remove('bg-white', 'text-stone-700', 'border', 'border-stone-200');
+
+          tabPanels.forEach(p => {
+            if (p.id === `tab-${target}`) {
+              p.classList.remove('hidden');
+            } else {
+              p.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      initCharts();
+      renderEstates();
+      renderCompetitors();
+      renderBundles();
+      renderSkus();
+      updateSimulator();
+      renderGantt(0);
+      renderModulesDetail();
+      renderHandover();
+
+      document.getElementById('estate-ring-filter').addEventListener('change', renderEstates);
+
+      document.getElementById('price-group-select').addEventListener('change', (e) => {
+        initPriceChart(e.target.value);
+      });
+
+      document.getElementById('sku-cat-filter').addEventListener('change', renderSkus);
+      document.getElementById('sku-role-filter').addEventListener('change', renderSkus);
+      document.getElementById('sku-search').addEventListener('input', renderSkus);
+
+      ['sim-fixed', 'sim-aov', 'sim-pen', 'sim-freq'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSimulator);
+      });
+
+      document.querySelectorAll('.preset-cost-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.preset-cost-btn').forEach(b => {
+            b.className = 'preset-cost-btn px-2.5 py-2 rounded-xl border border-stone-200 bg-alabaster hover:bg-sage-50 text-xs font-medium text-center transition';
+          });
+          btn.className = 'preset-cost-btn px-2.5 py-2 rounded-xl border-2 border-sage-700 bg-sage-50 text-xs font-medium text-center transition';
+          document.getElementById('sim-fixed').value = btn.dataset.fixed;
+          updateSimulator();
+        });
+      });
+
+      document.getElementById('gantt-delay').addEventListener('input', (e) => {
+        const d = Number(e.target.value);
+        document.getElementById('gantt-delay-label').textContent = d === 0 ? '+0 日（準時）' : `+${d} 日（順延）`;
+        renderGantt(d);
+      });
+
+      document.getElementById('module-stage-filter').addEventListener('change', renderModulesDetail);
+    });
+  </script>
+</body>
+</html>
